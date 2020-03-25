@@ -59,4 +59,5 @@ void setup() {
 
 void loop() {
   lcdtest();
+  delay(1000);
 }

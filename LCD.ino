@@ -14,10 +14,11 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
 
   int8_t findlcdaddress() {
   //kindly copied from https://randomnerdtutorials.com/esp32-esp8266-i2c-lcd-arduino-ide/
-    int8_t error, address, lcdaddress;
-    int nDevices;
+    int8_t error, address, lcdaddress = 0;
+    int nDevices = 0;
     Serial.println("Search I2C address...");
-    for(address = 1; address < 127; address++ ) {
+    Wire.begin();
+    for(address = 1; address < 127; address++) {
       Wire.beginTransmission(address);
       error = Wire.endTransmission();
       if (error == 0) {
@@ -44,9 +45,10 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
     return lcdaddress;
   }
 
-  LiquidCrystal_I2C lcd(findlcdaddress(), lcd_columns, lcd_rows);
+  LiquidCrystal_I2C lcd(0,0,0);
 
   void lcdsetup() {
+    lcd = LiquidCrystal_I2C(findlcdaddress(), lcd_columns, lcd_rows);
     lcd.init();
     lcd.backlight();
   }
