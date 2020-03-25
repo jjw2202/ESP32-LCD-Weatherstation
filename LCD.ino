@@ -1,5 +1,7 @@
 
 const uint8_t lcd_columns = 16, lcd_rows = 2;
+
+#ifdef LCDI2C
   #include <LiquidCrystal_I2C.h>
 
   /*
@@ -49,6 +51,36 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
     lcd.backlight();
   }
   
+#else
+  #include <LiquidCrystal.h>
+
+  /*
+   * Connection:
+   * VSS  to GND
+   * VDD  to 5V DC
+   * V0   to contrast via potentiometer to 5V DC and GND
+   * RS   to GPIO 23
+   * RW   to GND
+   * E    to GPIO 22
+   * D0   to -
+   * D1   to -
+   * D2   to -
+   * D3   to -
+   * D4   to GPIO 21
+   * D5   to GPIO 19
+   * D6   to GPIO 18
+   * D7   to GPIO 5
+   * A    to via 220Ω resistor at 5V DC
+   * K    to GND
+   */
+
+  const int rs = 23, en = 22, d4 = 21, d5 = 19, d6 = 18, d7 = 5;
+  LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+  void lcdsetup() {
+    lcd.begin(lcd_columns, lcd_rows);
+  }
+#endif
 
 void lcdtest() {
   lcd.setCursor(0, 0);
