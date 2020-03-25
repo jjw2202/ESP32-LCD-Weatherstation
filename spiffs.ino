@@ -6,6 +6,33 @@
 
 //SPIFFS data management functions
 
+#define WIFI_FILE_NAME "/wifi.cfg"
+const size_t WIFI_JSON_CAPACITY = JSON_OBJECT_SIZE(2) + 120;
+
+//TODO: rewrite to support direct serialization to file
+
+void savewifisettings(String ssid, String pass) {
+  DynamicJsonDocument doc(WIFI_JSON_CAPACITY);
+  ssid = ssid.length() > 32 ? ssid.substring(0,32) : ssid; //max 32 chars
+  pass = pass.length() > 63 ? pass.substring(0,63) : pass; //max 63 chars
+  doc["ssid"] = ssid;
+  doc["pass"] = pass;
+  char output[measureJson(doc)];
+  serializeJson(doc, output, sizeof(output));
+  writeFile(WIFI_FILE_NAME, output);
+}
+
+ws_t loadwifisettings() {
+  String json = readFile(WIFI_FILE_NAME);
+  DynamicJsonDocument doc(WIFI_JSON_CAPACITY);
+  deserializeJson(doc, json);
+  ws_t ws;
+  ws.ssid = doc["ssid"].as<String>();
+  ws.pass = doc["pass"].as<String>();
+  return ws;
+}
+
+
 //SPIFFS Core Functions
 
 #define FORMAT_SPIFFS_IF_FAILED true
