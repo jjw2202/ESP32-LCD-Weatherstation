@@ -12,6 +12,7 @@
 // you can get an IPAPI key by contacting them at ipapi.co/contact
 // you can get an OpenWeatherAPI key by registering at home.openweathermap.org/users/sign_up
 
+#define LCDI2C //uncomment if youre using I2C to control the LCD
 
 #define WIFI_CONNECT_ATTEMPTS 3 // max attempts for initiating wifi connection
 const char * hostname = "Weatherstation";
@@ -47,6 +48,8 @@ void setup() {
   Serial.begin(115200);
 
   SPIFFSsetup();
+  lcdsetup();
+
   wifisetup();
   wificonnect();
   updateposition();
@@ -55,6 +58,5 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  lcdtest();
 }
