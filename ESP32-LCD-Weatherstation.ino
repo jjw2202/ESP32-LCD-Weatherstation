@@ -34,6 +34,15 @@ ia_t ipaddress;
 pos_t position;
 ws_t wifisettings;
 
+typedef struct {
+  double temperature, humidity, rain, snow, wind, cloud, pressure, feelslike;
+  String shortdescription, longdescription, cityname, country;
+  bool valid = false;
+  uint32_t updatetime;
+} weather_t;
+
+weather_t weather;
+
 void setup() {
   Serial.begin(115200);
 
@@ -42,6 +51,7 @@ void setup() {
   wificonnect();
   updateposition();
   
+  updateweather();
 }
 
 void loop() {

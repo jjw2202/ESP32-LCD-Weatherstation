@@ -8,6 +8,7 @@ You only need to give it 3 things:
 
 * Your WiFi Credentials
 * An IPAPI Key
+* An OpenWeatherAPI Key
 
 ### WiFi Credentials
 
@@ -35,5 +36,13 @@ To get an IPAPI key for free, contact them at [ipapi.co/contact](https://ipapi.c
 
 Then create and/or open the file `keys.h` inside the project folder.
 Paste in `#define IPAPI_KEY "key"` and replace `key` with your key. 
+The quotes must remain.
+
+### OpenWeatherAPI Key
+
+You can get a free OpenWeatherAPI key by registering at [their homepage](https://home.openweathermap.org/users/sign_up).
+
+Then create and/or open the file `keys.h` inside the project folder.
+Paste in `#define OPENWEATHERAPI_KEY "key"` and replace `key` with your key. 
 The quotes must remain.
 
