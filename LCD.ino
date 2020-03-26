@@ -51,6 +51,9 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
     lcd = LiquidCrystal_I2C(findlcdaddress(), lcd_columns, lcd_rows);
     lcd.init();
     lcd.backlight();
+    lcd.createChar(0, lcdwificonnected);
+    lcd.createChar(1, lcdpositionupdated);
+    lcd.createChar(2, lcdweatherupdated);
   }
   
 #else
@@ -81,10 +84,36 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
 
   void lcdsetup() {
     lcd.begin(lcd_columns, lcd_rows);
+    lcd.createChar(0, lcdwificonnected);
+    lcd.createChar(1, lcdpositionupdated);
+    lcd.createChar(2, lcdweatherupdated);
   }
 #endif
 
+void lcdstart() {
+  lcd.setCursor(2, 0);
+  lcd.print("Looks at the");
+  lcd.setCursor(3, 1);
+  lcd.print("weather...");
+}
+
+void lcdstatus1() {
+  lcd.setCursor(15, 1);
+  lcd.write(0);
+}
+
+void lcdstatus2() {
+  lcd.setCursor(15, 1);
+  lcd.write(1);
+}
+
+void lcdstatus3() {
+  lcd.setCursor(15, 1);
+  lcd.write(2);
+}
+
 void lcdtest() {
+  lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Hello World");
   lcd.setCursor(0, 1);

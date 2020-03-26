@@ -3,6 +3,7 @@
 #include <SPIFFS.h>
 #include <ArduinoJson.h>
 #include "keys.h"
+#include "customlcdcharacters.h"
 
 // WiFi credentials need to be defined in wifi.cfg ON SPIFFS!
 //   please consult the README for details
@@ -49,12 +50,16 @@ void setup() {
 
   SPIFFSsetup();
   lcdsetup();
+  lcdstart();
 
   wifisetup();
   wificonnect();
+  lcdstatus1();
   updateposition();
+  lcdstatus2();
   
   updateweather();
+  lcdstatus3();
 }
 
 void loop() {
