@@ -17,7 +17,7 @@ void weatherloop() {
       screencount++;
       break;
     case 1: //temperature | humidity
-      screentext[0] = String("Temp.: ") + String(weather.temperature) + "°C";
+      screentext[0] = String("Temp.: ") + String(weather.temperature) + "\337C";
       lcdprint(0, screentext[0]);
       screentext[1] = String("Humidity: ") + String(weather.humidity) + "%";
       lcdprint(1, screentext[1]);
