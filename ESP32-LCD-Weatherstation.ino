@@ -52,14 +52,14 @@ void setup() {
   lcdsetup();
   lcdstart();
 
+  lcdstatus1();
   wifisetup();
   wificonnect();
-  lcdstatus1();
-  updateposition();
   lcdstatus2();
+  updateposition();
   
-  updateweather();
   lcdstatus3();
+  updateweather();
 }
 
 void loop() {
