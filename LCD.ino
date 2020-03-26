@@ -111,6 +111,7 @@ void lcdprint(bool row, String text) {
   if (textlength > 16) {
     lcdprintloop();
   } else {
+    text.concat(String("                ").substring(0, 16 - textlength));
     lcd.setCursor(0, row);
     lcd.print(text);
   }
