@@ -37,6 +37,13 @@ void weatherloop() {
   screencount++;
 }
 
+uint32_t nextweatherupdatems = 0;
+void checkweatherupdate() {
+  if (millis() < nextweatherupdatems) return;
+  nextweatherupdatems = millis() + WEATHER_UPDATE_INTERVAL * 1000 * 60;
+  updateweather();
+}
+
 void updateweather() {
    if (WiFi.status() != WL_CONNECTED) {
     wificonnect();

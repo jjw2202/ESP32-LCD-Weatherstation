@@ -17,6 +17,8 @@
 
 #define WEATHER_CHANGE_SCREEN 10 //in s, floats like 1.5f are allowed
 
+#define WEATHER_UPDATE_INTERVAL 10 //in min
+
 #define WIFI_CONNECT_ATTEMPTS 3 // max attempts for initiating wifi connection
 const char * hostname = "Weatherstation";
 #define IP_RESPONSE_TIMEOUT 5000
@@ -61,11 +63,12 @@ void setup() {
   updateposition();
   
   lcdstatus3();
-  updateweather();
+  checkweatherupdate();
 }
 
 void loop() {
   weatherloop();
   lcdprintloop();
+  checkweatherupdate();
   delay(1);
 }
