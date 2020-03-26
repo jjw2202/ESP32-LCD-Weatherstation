@@ -17,23 +17,23 @@ void weatherloop() {
       screencount++;
       break;
     case 1: //temperature | humidity
-      screentext[0] = String("Temp.: ") + String(weather.temperature + 0.05, 1) + "\337C";
+      screentext[0] = String("Temp.: ") + String(weather.temperature, 1) + "\337C";
       lcdprint(0, screentext[0]);
       screentext[1] = String("Humidity: ") + String(weather.humidity, 0) + "%";
       lcdprint(1, screentext[1]);
       screencount++;
       break;
     case 2: //wind | clouds
-      screentext[0] = String("Wind: ") + String(weather.wind + 0.05, 1) + "m/s";
+      screentext[0] = String("Wind: ") + String(weather.wind, 1) + "m/s";
       lcdprint(0, screentext[0]);
       screentext[1] = String("Clouds: ") + String(weather.cloud, 0) + "%";
       lcdprint(1, screentext[1]);
       screencount++;
       break;
     case 3: //rain | snow
-      screentext[0] = String("Rain: ") + String(weather.rain + 0.05, 1) + "mm/h";
+      screentext[0] = String("Rain: ") + String(weather.rain, 1) + "mm/h";
       lcdprint(0, screentext[0]);
-      screentext[1] = String("Snow: ") + String(weather.snow + 0.05, 1) + "mm/h";
+      screentext[1] = String("Snow: ") + String(weather.snow, 1) + "mm/h";
       lcdprint(1, screentext[1]);
       screencount++;
       break;
