@@ -1,9 +1,9 @@
 
-uint32_t nextms = 0;
+uint32_t nextweatherchangems = 0;
 uint8_t screencount = 0;
 void weatherloop() {
-  if (millis() < nextms) return;
-  nextms = millis() + NEXTUPDATEMS;
+  if (millis() < nextweatherchangems) return;
+  nextweatherchangems = millis() + WEATHER_CHANGE_SCREEN * 1000;
 
   String screentext[] = {"", ""};
 

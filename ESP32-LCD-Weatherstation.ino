@@ -15,7 +15,7 @@
 
 #define LCDI2C //uncomment if youre using I2C to control the LCD
 
-#define NEXTUPDATEMS 5000
+#define WEATHER_CHANGE_SCREEN 10 //in s, floats like 1.5f are allowed
 
 #define WIFI_CONNECT_ATTEMPTS 3 // max attempts for initiating wifi connection
 const char * hostname = "Weatherstation";
