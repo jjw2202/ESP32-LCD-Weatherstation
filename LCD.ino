@@ -97,6 +97,62 @@ void lcdstart() {
   lcd.print("weather...");
 }
 
+
+String rows[] = {"", ""};
+uint32_t rowstartms[] = {0, 0};
+#define LCD_SCROLL_START_WAIT 3000 //in ms
+#define LCD_SCROLL_SPEED_WAIT 500 //in ms
+#define LCD_SCROLL_END_WAIT 2000 //in ms
+
+void lcdprint(bool row, String text) {
+  uint16_t textlength = text.length();
+  rows[row] = text;
+  rowstartms[row] = millis();
+  if (textlength > 16) {
+    lcdprintloop();
+  } else {
+    lcd.setCursor(0, row);
+    lcd.print(text);
+  }
+}
+
+void lcdprintloop() {
+  for (uint8_t row = 0; row < 2; row++) {
+    String text = rows[row];
+    uint16_t textlength = text.length();
+    if (textlength <= 16) continue;
+    uint32_t startms = rowstartms[row];
+    uint32_t now = millis();
+      lcd.setCursor(0, row);
+    //double progress = (now - startms) / (LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - 16));
+    if (now < startms + LCD_SCROLL_START_WAIT) {
+      //start wait
+      lcd.print(text.substring(0,16));
+    } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - 16)) {
+      //scroll to left
+      uint16_t progress = 
+        ((double)(now - startms - LCD_SCROLL_START_WAIT) 
+        / (LCD_SCROLL_SPEED_WAIT * (textlength - 16))) * (textlength - 16);
+      lcd.print(text.substring(progress, progress + 16));
+    } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - 16) + LCD_SCROLL_END_WAIT) {
+      //end wait
+      lcd.print(text.substring(textlength - 16, textlength));
+    } else if (now < startms + LCD_SCROLL_START_WAIT + 2 * LCD_SCROLL_SPEED_WAIT * (textlength - 16) + LCD_SCROLL_END_WAIT) {
+      //scroll to right
+      uint16_t progress = (textlength - 16) - 
+        ((double)(now - startms - LCD_SCROLL_START_WAIT - LCD_SCROLL_SPEED_WAIT * (textlength - 16) - LCD_SCROLL_END_WAIT)
+        / (LCD_SCROLL_SPEED_WAIT * (textlength - 16))) * (textlength - 16);
+      lcd.print(text.substring(progress, progress + 16));
+    } else {
+      //reset
+      rowstartms[row] = now;
+      Serial.println("lcdloop: reached end of scroll animation, resetting!");
+      lcdprintloop();
+    }
+  }
+}
+
+
 void lcdstatus1() {
   lcd.setCursor(15, 1);
   lcd.write(byte(0));
@@ -115,7 +171,7 @@ void lcdstatus3() {
 void lcdtest() {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Hello World");
+  lcd.print(String("Hello World"));
   lcd.setCursor(0, 1);
   lcd.print("Im the best");
   //lcd.clear();

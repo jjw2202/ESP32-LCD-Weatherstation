@@ -13,7 +13,7 @@
 // you can get an IPAPI key by contacting them at ipapi.co/contact
 // you can get an OpenWeatherAPI key by registering at home.openweathermap.org/users/sign_up
 
-#define LCDI2C //uncomment if youre using I2C to control the LCD
+//#define LCDI2C //uncomment if youre using I2C to control the LCD
 
 #define WIFI_CONNECT_ATTEMPTS 3 // max attempts for initiating wifi connection
 const char * hostname = "Weatherstation";
@@ -60,9 +60,12 @@ void setup() {
   
   lcdstatus3();
   updateweather();
+
+  lcdprint(0, "Sketch uses 903178 bytes (68%) of program storage space. Maximum is 1310720 bytes.");
+  lcdprint(1, "Global variables use 40344 bytes (12%) of dynamic memory, leaving 287336 bytes for local variables. Maximum is 327680 bytes.");
 }
 
 void loop() {
-  lcdtest();
-  delay(1000);
+  lcdprintloop();
+  delay(1);
 }

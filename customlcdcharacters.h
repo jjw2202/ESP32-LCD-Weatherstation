@@ -24,7 +24,7 @@ byte lcdpositionupdated[8] = {
 
 byte lcdweatherupdated[8] = {
   0b11100,
-  0b11001,
+  0b11000,
   0b10000,
   0b00010,
   0b01001,
