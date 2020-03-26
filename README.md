@@ -1,6 +1,6 @@
 # ESP32-LCD-Weatherstation
 
-A small Weatherstation using only an ESP32 and a LCD display.
+A small Weatherstation using only an ESP32 and a LC-Display.
 
 ## Setup
 
