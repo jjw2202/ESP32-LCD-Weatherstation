@@ -99,17 +99,17 @@ void lcdstart() {
 
 void lcdstatus1() {
   lcd.setCursor(15, 1);
-  lcd.write(0);
+  lcd.write(byte(0));
 }
 
 void lcdstatus2() {
   lcd.setCursor(15, 1);
-  lcd.write(1);
+  lcd.write(byte(1));
 }
 
 void lcdstatus3() {
   lcd.setCursor(15, 1);
-  lcd.write(2);
+  lcd.write(byte(2));
 }
 
 void lcdtest() {
