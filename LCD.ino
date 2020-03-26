@@ -64,22 +64,22 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
    * VSS  to GND
    * VDD  to 5V DC
    * V0   to contrast via potentiometer to 5V DC and GND
-   * RS   to GPIO 23
+   * RS   to GPIO 13
    * RW   to GND
-   * E    to GPIO 22
+   * E    to GPIO 12
    * D0   to -
    * D1   to -
    * D2   to -
    * D3   to -
-   * D4   to GPIO 21
-   * D5   to GPIO 19
-   * D6   to GPIO 18
-   * D7   to GPIO 5
+   * D4   to GPIO 14
+   * D5   to GPIO 27
+   * D6   to GPIO 33
+   * D7   to GPIO 32
    * A    to via 220Ω resistor at 5V DC
    * K    to GND
    */
 
-  const int rs = 23, en = 22, d4 = 21, d5 = 19, d6 = 18, d7 = 5;
+  const uint8_t rs = 13, en = 12, d4 = 14, d5 = 27, d6 = 33, d7 = 32;
   LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
   void lcdsetup() {
