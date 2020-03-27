@@ -62,15 +62,16 @@ void setup() {
   
   SPIFFSsetup();
   lcdsetup();
-  lcdstart();
+  lcdprint(0, "  Looks at the");
+  lcdprint(1, "   weather...");
 
-  lcdstatus1();
+  lcdprint(1, "   weather...", 1, true);
   wifisetup();
   wificonnect();
-  lcdstatus2();
+  lcdprint(1, "   weather...", 2, true);
   updateposition();
   
-  lcdstatus3();
+  lcdprint(1, "   weather...", 3, true);
   updateweather();
   
   Serial.println("Starting tasks...");
@@ -130,6 +131,8 @@ void changetask(void *pvParameters)  // This is a task.
   //Serial.println("Task Name: " + String(pcTaskGetTaskName(NULL)));
   Serial.println("esp_task_wdt_add: " + String(esp_err_to_name(esp_task_wdt_add(NULL))));
   //Serial.println("Task on Core: " + String(xPortGetCoreID()));
+  //lcdprint(0, "updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)), 1);  //for testing scrolling lcd text
+  //lcdprint(1, "updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)), 1, true);
   while(1) {
     weatherloop();
     //Serial.println("changetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));

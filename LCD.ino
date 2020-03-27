@@ -51,9 +51,7 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
     lcd = LiquidCrystal_I2C(findlcdaddress(), lcd_columns, lcd_rows);
     lcd.init();
     lcd.backlight();
-    lcd.createChar(0, lcdwificonnected);
-    lcd.createChar(1, lcdpositionupdated);
-    lcd.createChar(2, lcdweatherupdated);
+    genericlcdsetup();
   }
   
 #else
@@ -84,36 +82,45 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
 
   void lcdsetup() {
     lcd.begin(lcd_columns, lcd_rows);
-    lcd.createChar(0, lcdwificonnected);
-    lcd.createChar(1, lcdpositionupdated);
-    lcd.createChar(2, lcdweatherupdated);
+    genericlcdsetup();
   }
 #endif
 
-void lcdstart() {
-  lcd.setCursor(2, 0);
-  lcd.print("Looks at the");
-  lcd.setCursor(3, 1);
-  lcd.print("weather...");
+void genericlcdsetup() {
+  lcd.createChar(1, lcdwificonnected);
+  lcd.createChar(2, lcdpositionupdated);
+  lcd.createChar(3, lcdweatherupdated);
 }
 
-
+#define MAX_ROW_LENGTH 16
 String rows[] = {"", ""};
 uint32_t rowstartms[] = {0, 0};
+uint8_t infochars[] = {0, 0};
+bool infocharsatend[] = {false, false};
 #define LCD_SCROLL_START_WAIT 3000 //in ms
 #define LCD_SCROLL_SPEED_WAIT 500 //in ms
 #define LCD_SCROLL_END_WAIT 2000 //in ms
 
-void lcdprint(bool row, String text) {
+void lcdprint() {for (uint8_t row = 0; row < 2; row++) {lcdprint(row, "", 0, false);}}
+void lcdprint(bool row) {lcdprint(row, "", 0, false);}
+void lcdprint(bool row, String text) {lcdprint(row, text, 0, false);}
+void lcdprint(bool row, String text, uint8_t infochar) {lcdprint(row, text, infochar, false);}
+void lcdprint(bool row, String text, uint8_t infochar, bool infocharatend) {
   uint16_t textlength = text.length();
+  uint8_t rowlength = (infochar > 0 ? MAX_ROW_LENGTH - 1 : MAX_ROW_LENGTH);
+  uint8_t rowoffset = (infochar > 0 && !infocharatend && rowlength < MAX_ROW_LENGTH ? 0 : 1);
   rows[row] = text;
   rowstartms[row] = millis();
+  infochars[row] = infochar;
+  infocharsatend[row] = infocharatend;
   if (textlength > 16) {
     lcdprintloop();
   } else {
-    text.concat(String("                ").substring(0, 16 - textlength));
+    text.concat(String("                ").substring(0, rowlength - textlength));
     lcd.setCursor(0, row);
+    if (infochar > 0 && !infocharatend) lcd.write(infochar);
     lcd.print(text);
+    if (infochar > 0 && infocharatend) lcd.write(infochar);
   }
 }
 
@@ -122,49 +129,38 @@ void lcdprintloop() {
     String text = rows[row];
     uint16_t textlength = text.length();
     if (textlength <= 16) continue;
+    uint8_t infochar = infochars[row];
+    bool infocharatend = infocharsatend[row];
+    uint8_t rowlength = (infochar > 0 ? MAX_ROW_LENGTH - 1 : MAX_ROW_LENGTH);
+    uint8_t rowoffset = (infochar > 0 && !infocharatend && rowlength < MAX_ROW_LENGTH ? 0 : 1);
     uint32_t startms = rowstartms[row];
     uint32_t now = millis();
-      lcd.setCursor(0, row);
-    //double progress = (now - startms) / (LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - 16));
+    lcd.setCursor(0, row);
+    if (infochar > 0 && !infocharatend) lcd.write(infochar);
     if (now < startms + LCD_SCROLL_START_WAIT) {
       //start wait
-      lcd.print(text.substring(0,16));
-    } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - 16)) {
+      lcd.print(text.substring(0, rowlength));
+    } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - rowlength)) {
       //scroll to left
       uint16_t progress = 
         ((double)(now - startms - LCD_SCROLL_START_WAIT) 
-        / (LCD_SCROLL_SPEED_WAIT * (textlength - 16))) * (textlength - 16);
-      lcd.print(text.substring(progress, progress + 16));
-    } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - 16) + LCD_SCROLL_END_WAIT) {
+        / (LCD_SCROLL_SPEED_WAIT * (textlength - rowlength))) * (textlength - rowlength);
+      lcd.print(text.substring(progress, progress + rowlength));
+    } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT) {
       //end wait
-      lcd.print(text.substring(textlength - 16, textlength));
-    } else if (now < startms + LCD_SCROLL_START_WAIT + 2 * LCD_SCROLL_SPEED_WAIT * (textlength - 16) + LCD_SCROLL_END_WAIT) {
+      lcd.print(text.substring(textlength - rowlength, textlength));
+    } else if (now < startms + LCD_SCROLL_START_WAIT + 2 * LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT) {
       //scroll to right
-      uint16_t progress = (textlength - 16) - 
-        ((double)(now - startms - LCD_SCROLL_START_WAIT - LCD_SCROLL_SPEED_WAIT * (textlength - 16) - LCD_SCROLL_END_WAIT)
-        / (LCD_SCROLL_SPEED_WAIT * (textlength - 16))) * (textlength - 16);
-      lcd.print(text.substring(progress, progress + 16));
+      uint16_t progress = (textlength - rowlength) - 
+        ((double)(now - startms - LCD_SCROLL_START_WAIT - LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) - LCD_SCROLL_END_WAIT)
+        / (LCD_SCROLL_SPEED_WAIT * (textlength - rowlength))) * (textlength - rowlength);
+      lcd.print(text.substring(progress, progress + rowlength));
     } else {
       //reset
       rowstartms[row] = now;
       Serial.println("lcdloop: reached end of scroll animation, resetting!");
       lcdprintloop();
     }
+    if (infochar > 0 && infocharatend) lcd.write(infochar);
   }
-}
-
-
-void lcdstatus1() {
-  lcd.setCursor(15, 1);
-  lcd.write(byte(0));
-}
-
-void lcdstatus2() {
-  lcd.setCursor(15, 1);
-  lcd.write(byte(1));
-}
-
-void lcdstatus3() {
-  lcd.setCursor(15, 1);
-  lcd.write(byte(2));
 }
