@@ -134,7 +134,7 @@ void lcdprintloop() {
     uint32_t startms = rowstartms[row];
     uint32_t now = millis();
     lcd.setCursor(0, row);
-    if (infochar > 0 && !infocharatend) lcd.write(infochar);
+    if (infochar > 0 && !infocharatend) lcd.write(row);
     if (now < startms + LCD_SCROLL_START_WAIT) {
       //start wait
       lcd.print(text.substring(0, rowlength));
@@ -159,6 +159,6 @@ void lcdprintloop() {
       Serial.println("lcdloop: reached end of scroll animation, resetting!");
       lcdprintloop();
     }
-    if (infochar > 0 && infocharatend) lcd.write(infochar);
+    if (infochar > 0 && infocharatend) lcd.write(row);
   }
 }
