@@ -19,6 +19,7 @@
 #define WEATHER_CHANGE_SCREEN 5 //in s, floats like 1.5f are allowed
 
 #define WEATHER_UPDATE_INTERVAL 2 //in min
+#define POSITION_UPDATE_INTERVAL 1 //in h
 
 #define WIFI_CONNECT_ATTEMPTS 3 // max attempts for initiating wifi connection
 const char * hostname = "Weatherstation";
@@ -68,11 +69,20 @@ void setup() {
   lcdprint(1, "   weather...", 1, true);
   wifisetup();
   wificonnect();
-  lcdprint(1, "   weather...", 2, true);
-  updateposition();
+
+  loadposition(true);
+  if (!position.valid) {
+    lcdprint(1, "   weather...", 2, true);
+    updateposition();
+    saveposition();
+  }
+  Serial.println("Latitude: " + String(position.latitude));
+  Serial.println("Longitude: " + String(position.longitude));
   
   lcdprint(1, "   weather...", 3, true);
   updateweather();
+
+  Serial.println("Internal IP Address: " + String(ipaddress.internalip));
   
   Serial.println("Starting tasks...");
   
@@ -95,7 +105,7 @@ void setup() {
     ,  NULL 
     ,  1  //  Core
   );
-  delay(5000);
+  delay(2000);
   xTaskCreatePinnedToCore(
     updatetask
     ,  "updatetask"
@@ -104,6 +114,16 @@ void setup() {
     ,  1  // Priority
     ,  NULL 
     ,  0  //  Core
+  );
+  delay(5000);
+  xTaskCreatePinnedToCore(
+    updatepostion
+    ,  "updatepostion"
+    ,  5500  // Stack size
+    ,  NULL
+    ,  2  // Priority
+    ,  NULL 
+    ,  1  //  Core
   );
   Serial.println("Setup finished");
   vTaskDelete(NULL); //we dont need this task anymore
@@ -132,7 +152,7 @@ void changetask(void *pvParameters)  // This is a task.
   Serial.println("esp_task_wdt_add: " + String(esp_err_to_name(esp_task_wdt_add(NULL))));
   //Serial.println("Task on Core: " + String(xPortGetCoreID()));
   //lcdprint(0, "updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)), 1);  //for testing scrolling lcd text
-  //lcdprint(1, "updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)), 1, true);
+  //lcdprint(1, "updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)), 2, true);
   while(1) {
     weatherloop();
     //Serial.println("changetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));
@@ -152,6 +172,23 @@ void updatetask(void *pvParameters)  // This is a task.
     updateweather();
     //Serial.println("updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));
     vTaskDelay(WEATHER_UPDATE_INTERVAL * 1000 * 60);
+  }
+}
+
+void updatepostion(void *pvParameters)  // This is a task.
+{
+  (void) pvParameters;
+  Serial.println("Started updatepostion");
+  //Serial.println("Task on Core: " + String(xPortGetCoreID()));
+  //Serial.println("Task Name: " + String(pcTaskGetTaskName(NULL)));
+  //Serial.println("esp_task_wdt_add: " + String(esp_err_to_name(esp_task_wdt_add(NULL))));
+  //Serial.println("esp_task_wdt_status: " + String(esp_err_to_name(esp_task_wdt_status(NULL))));
+  while(1) {
+    updateposition();
+    vTaskDelay(0); //give time to the scheduler
+    saveposition();
+    Serial.println("updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));
+    vTaskDelay(POSITION_UPDATE_INTERVAL * 1000 * 60 * 60);
   }
 }
 

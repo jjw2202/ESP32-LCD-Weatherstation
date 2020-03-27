@@ -8,6 +8,8 @@
 
 #define WIFI_FILE_NAME "/wifi.cfg"
 const size_t WIFI_JSON_CAPACITY = JSON_OBJECT_SIZE(2) + 120;
+#define POSITION_FILE_NAME "/position.json"
+const size_t POSITION_JSON_CAPACITY = JSON_OBJECT_SIZE(2) + 2 * JSON_OBJECT_SIZE(3) + 110;
 
 //TODO: rewrite to support direct serialization to file
 
@@ -17,7 +19,7 @@ void savewifisettings(String ssid, String pass) {
   pass = pass.length() > 63 ? pass.substring(0,63) : pass; //max 63 chars
   doc["ssid"] = ssid;
   doc["pass"] = pass;
-  char output[measureJson(doc)];
+  char output[measureJson(doc)+1];
   serializeJson(doc, output, sizeof(output));
   writeFile(WIFI_FILE_NAME, output);
 }
@@ -32,6 +34,40 @@ ws_t loadwifisettings() {
   return ws;
 }
 
+void loadposition() {loadposition(false);}
+void loadposition(bool forceoverwrite) {
+  String json = readFile(POSITION_FILE_NAME);
+  DynamicJsonDocument doc(POSITION_JSON_CAPACITY);
+  deserializeJson(doc, json);
+  JsonObject jsonipaddress = doc["ipaddress"];
+  if ((ipaddress.valid < jsonipaddress["valid"]) || forceoverwrite) {
+    ipaddress.externalip = jsonipaddress["externalip"].as<String>();
+    ipaddress.internalip = jsonipaddress["internalip"].as<String>();
+    ipaddress.valid = jsonipaddress["valid"];
+  }
+  JsonObject jsonposition = doc["position"];
+  if ((position.valid < jsonposition["valid"]) || forceoverwrite) {
+    position.valid = jsonposition["valid"];
+    position.latitude = jsonposition["latitude"];
+    position.longitude = jsonposition["longitude"];
+  }
+}
+
+void saveposition() {
+  DynamicJsonDocument doc(POSITION_JSON_CAPACITY);
+  JsonObject jsonipaddress = doc.createNestedObject("ipaddress");
+  jsonipaddress["externalip"] = ipaddress.externalip;
+  jsonipaddress["internalip"] = ipaddress.internalip;
+  jsonipaddress["valid"] = ipaddress.valid;
+  JsonObject jsonposition = doc.createNestedObject("position");
+  jsonposition["valid"] = position.valid;
+  jsonposition["latitude"] = position.latitude;
+  jsonposition["longitude"] = position.longitude;
+  char output[measureJson(doc)+1];
+  serializeJson(doc, output, sizeof(output));
+  Serial.println("Creating position JSON: " + String(output));
+  writeFile(POSITION_FILE_NAME, output);
+}
 
 //SPIFFS Core Functions
 
