@@ -192,9 +192,7 @@ void updatepostion(void *pvParameters)  // This is a task.
   //Serial.println("esp_task_wdt_status: " + String(esp_err_to_name(esp_task_wdt_status(NULL))));
   while(1) {
     updateposition();
-    vTaskDelay(0); //give time to the scheduler
-    saveposition();
-    Serial.println("updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));
+    //Serial.println("updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));
     vTaskDelay(POSITION_UPDATE_INTERVAL * 1000 * 60 * 60);
   }
 }
