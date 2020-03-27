@@ -116,6 +116,18 @@ void lcdwelcometext(uint8_t infochar) {
   lcdprint(1, rows[1], infochar, true);
 }
 
+String SanitizeText(String text) {
+  text.replace("Ä", "ä");
+  text.replace("Ö", "ö");
+  text.replace("Ü", "ü");
+  text.replace("ä", "\341");
+  text.replace("ö", "\357");
+  text.replace("ü", "\365");
+  text.replace("ß", "\342");
+  text.replace("°", "\223");
+  return text;
+}
+
 #define MAX_ROW_LENGTH 16
 String rows[] = {"", ""};
 uint32_t rowstartms[] = {0, 0};
@@ -130,6 +142,7 @@ void lcdprint(bool row) {lcdprint(row, "", 0, false);}
 void lcdprint(bool row, String text) {lcdprint(row, text, 0, false);}
 void lcdprint(bool row, String text, uint8_t infochar) {lcdprint(row, text, infochar, false);}
 void lcdprint(bool row, String text, uint8_t infochar, bool infocharatend) {
+  text = SanitizeText(text);
   uint16_t textlength = text.length();
   uint8_t rowlength = (infochar > 0 ? MAX_ROW_LENGTH - 1 : MAX_ROW_LENGTH);
   uint8_t rowoffset = (infochar > 0 && !infocharatend && rowlength < MAX_ROW_LENGTH ? 0 : 1);
