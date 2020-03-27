@@ -2,6 +2,20 @@
 
 A small Weatherstation using only an ESP32 and a LC-Display.
 
+## Features
+
+Our weather station has quite some special features:
+
+* Displays weather data of current location
+* Automatically switches language depending on location
+* Automatic  detection of I²C or directly connected LCD
+
+A little bit more hidden, but also relevant:
+
+* Stutter free experience due to parallel processing
+* Nice Icons
+* No irrelevant information due to a neat and tidy layouted display
+
 ## Setup
 
 You only need to give it 3 things:
