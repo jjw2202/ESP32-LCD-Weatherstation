@@ -1,8 +1,46 @@
 # ESP32-LCD-Weatherstation
 
-A small Weatherstation using only an ESP32 and a LC-Display.
+A small weather station using only an ESP32 and a 16x2 LCD.
 
-## Setup
+## Hardware Setup
+
+Our weather station supports LCDs connected directly to the ESP32 as well as those controlled by I2C. The special thing about it: you don't have to change anything in the code - plug and play.
+
+### I²C
+
+| ESP32 | LCD     |
+|-------|---------|
+| GND   | GND     |
+| VIN   | VCC     |
+| SDA   | GPIO 21 |
+| SCL   | GPIO 22 |
+
+![connection I²C](documentation/connection_I2C.png)
+
+### Direct
+
+| ESP32                            | LCD     |
+|----------------------------------|---------|
+| GND                              | VSS     |
+| VIN                              | VDD     |
+| via potentiometer to VIN and GND | V0      |
+| GPIO 13                          | RS      |
+| GND                              | RW      |
+| GPIO 12                          | E       |
+| -                                | D0      |
+| -                                | D1      |
+| -                                | D2      |
+| -                                | D3      |
+| GPIO 14                          | D4      |
+| GPIO 27                          | D5      |
+| GPIO 33                          | D6      |
+| GPIO 32                          | D7      |
+| via 220Ω resistor at VIN         | A       |
+| GND                              | K       |
+
+![connection direct](documentation/connection_direct.png)
+
+## Software Setup
 
 You only need to give it 3 things:
 
@@ -45,4 +83,3 @@ You can get a free OpenWeatherAPI key by registering at [their homepage](https:/
 Then create and/or open the file `keys.h` inside the project folder.
 Paste in `#define OPENWEATHERAPI_KEY "key"` and replace `key` with your key. 
 The quotes must remain.
-
