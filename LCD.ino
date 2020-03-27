@@ -87,9 +87,6 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
 #endif
 
 void genericlcdsetup() {
-  lcd.createChar(1, lcdwificonnected);
-  lcd.createChar(2, lcdpositionupdated);
-  lcd.createChar(3, lcdweatherupdated);
 }
 
 #define MAX_ROW_LENGTH 16
@@ -113,14 +110,15 @@ void lcdprint(bool row, String text, uint8_t infochar, bool infocharatend) {
   rowstartms[row] = millis();
   infochars[row] = infochar;
   infocharsatend[row] = infocharatend;
+  if (infochar > 0) lcd.createChar(0, chararray[infochar]);
   if (textlength > 16) {
     lcdprintloop();
   } else {
     text.concat(String("                ").substring(0, rowlength - textlength));
     lcd.setCursor(0, row);
-    if (infochar > 0 && !infocharatend) lcd.write(infochar);
+    if (infochar > 0 && !infocharatend) lcd.write(byte(0));
     lcd.print(text);
-    if (infochar > 0 && infocharatend) lcd.write(infochar);
+    if (infochar > 0 && infocharatend) lcd.write(byte(0));
   }
 }
 
