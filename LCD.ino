@@ -87,9 +87,15 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
 #endif
 
 void genericlcdsetup() {
-  lcd.createChar(1, lcdwificonnected);
-  lcd.createChar(2, lcdpositionupdated);
-  lcd.createChar(3, lcdweatherupdated);
+  lcd.createChar(1, lcdwifi);
+  lcd.createChar(2, lcdposition);
+  lcd.createChar(3, lcdweather);
+  lcd.createChar(4, lcdtemperature);
+  lcd.createChar(5, lcdhumidity);
+  lcd.createChar(6, lcdwind);
+  lcd.createChar(7, lcdclouds);
+  lcd.createChar(8, lcdrain);
+  lcd.createChar(9, lcdsnow);
 }
 
 #define MAX_ROW_LENGTH 16
