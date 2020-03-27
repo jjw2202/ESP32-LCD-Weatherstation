@@ -47,6 +47,7 @@ const String welcometext[] = {
 
 typedef struct {
   double latitude, longitude;
+  String countrycode;
   bool valid = false;
 } pos_t; //position
 typedef struct {
@@ -64,7 +65,7 @@ ws_t wifisettings;
 
 typedef struct {
   double temperature, humidity, rain, snow, wind, cloud, pressure, feelslike;
-  String shortdescription, longdescription, cityname, country;
+  String shortdescription, longdescription, cityname, countrycode;
   bool valid = false;
   uint32_t updatetime;
 } weather_t;

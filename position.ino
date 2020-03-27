@@ -13,6 +13,7 @@ void updateposition() {
     pos_t newposition = getposition(ipaddress);
     if (newposition.valid) position = newposition;
   }
+  position.countrycode = weather.countrycode;
   saveposition();
 }
 
