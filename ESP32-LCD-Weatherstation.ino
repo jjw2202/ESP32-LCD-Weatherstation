@@ -27,6 +27,7 @@ const char * hostname = "Weatherstation";
 
 #define WDT_TIMEOUT 1000 //WDT timeout in seconds, seems more like milliseconds even though documentation says its in seconds
 
+#define WELCOMETEXT_COUNT 5
 const String welcometext[] = {
   "Creating the weather",
   "Looking at the weather",
@@ -71,23 +72,21 @@ void setup() {
   
   SPIFFSsetup();
   lcdsetup();
-  lcdprint(0, "  Looks at the");
-  lcdprint(1, "   weather...");
+  lcdwelcometext();
 
-  lcdprint(1, "   weather...", 1, true);
+  lcdwelcometext(1);
   wifisetup();
   wificonnect();
 
   loadposition(true);
   if (!position.valid) {
-    lcdprint(1, "   weather...", 2, true);
+    lcdwelcometext(2);
     updateposition();
-    saveposition();
   }
   Serial.println("Latitude: " + String(position.latitude));
   Serial.println("Longitude: " + String(position.longitude));
   
-  lcdprint(1, "   weather...", 3, true);
+  lcdwelcometext(3);
   updateweather();
 
   Serial.println("Internal IP Address: " + String(ipaddress.internalip));

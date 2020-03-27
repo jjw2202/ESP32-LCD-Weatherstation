@@ -89,8 +89,31 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
 void genericlcdsetup() {
 }
 
-void lcdwelcometext() {
-  uint8_t textnum = random(sizeof(welcometext));
+uint8_t textnum = 255;
+void lcdwelcometext() {lcdwelcometext(0);}
+void lcdwelcometext(uint8_t infochar) {
+  if (textnum == 255) textnum = random(WELCOMETEXT_COUNT);
+  String text = welcometext[textnum];
+  String rows[] = {"", ""};
+  if (text.indexOf(" ") <= 16) {
+    uint16_t index = 0, previndex;
+    while (index <= 16) {
+      previndex = index;
+      index = text.indexOf(" ", previndex + 1);
+    }
+    index = previndex;
+    rows[0] = text.substring(0, index);
+    rows[0] = String("                ").substring(0, (16 - rows[0].length()) / 2) + rows[0];
+    rows[1] = text.substring(index + 1);
+    rows[1] = String("                ").substring(0, ((infochar == 0 ? 16 : 15) - rows[1].length()) / 2) + rows[1];
+  } else {
+    //welcometext should not exceed 16 chars per line
+    //will not scroll due to no call to lcdprintloop() in setup
+    //maybe can be fixed by starting lcdtask earlier in setup
+    rows[0] = text;
+  }
+  lcdprint(0, rows[0]);
+  lcdprint(1, rows[1], infochar, true);
 }
 
 #define MAX_ROW_LENGTH 16
