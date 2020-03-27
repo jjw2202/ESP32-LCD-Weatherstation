@@ -110,15 +110,15 @@ void lcdprint(bool row, String text, uint8_t infochar, bool infocharatend) {
   rowstartms[row] = millis();
   infochars[row] = infochar;
   infocharsatend[row] = infocharatend;
-  if (infochar > 0) lcd.createChar(0, chararray[infochar]);
+  if (infochar > 0) lcd.createChar(row, chararray[infochar]);
   if (textlength > 16) {
     lcdprintloop();
   } else {
     text.concat(String("                ").substring(0, rowlength - textlength));
     lcd.setCursor(0, row);
-    if (infochar > 0 && !infocharatend) lcd.write(byte(0));
+    if (infochar > 0 && !infocharatend) lcd.write(byte(row));
     lcd.print(text);
-    if (infochar > 0 && infocharatend) lcd.write(byte(0));
+    if (infochar > 0 && infocharatend) lcd.write(byte(row));
   }
 }
 
