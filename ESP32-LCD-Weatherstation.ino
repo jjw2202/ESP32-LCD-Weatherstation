@@ -82,7 +82,7 @@ void setup() {
     ,  NULL
     ,  1  // Priority
     ,  NULL 
-    ,  0  //  Core
+    ,  1  //  Core
   );
   delay(1000);
   xTaskCreatePinnedToCore(
@@ -92,7 +92,7 @@ void setup() {
     ,  NULL
     ,  1  // Priority
     ,  NULL 
-    ,  0  //  Core
+    ,  1  //  Core
   );
   delay(5000);
   xTaskCreatePinnedToCore(
@@ -102,7 +102,7 @@ void setup() {
     ,  NULL
     ,  1  // Priority
     ,  NULL 
-    ,  1  //  Core
+    ,  0  //  Core
   );
   Serial.println("Setup finished");
   vTaskDelete(NULL); //we dont need this task anymore
