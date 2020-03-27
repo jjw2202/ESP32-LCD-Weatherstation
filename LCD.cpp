@@ -8,10 +8,10 @@ LCDadapt::LCDadapt(uint8_t cols, uint8_t rows) {
 }
 
 void LCDadapt::begin(uint8_t cols, uint8_t rows) {
-  uint8_t address = findi2caddress();
-  if (address > 0) usesi2c = true;
+  this->i2caddress = findi2caddress();
+  if (i2caddress > 0) this->usesi2c = true;
   if (usesi2c) {
-    lcdi2c = LiquidCrystal_I2C(address, cols, rows);
+    lcdi2c = LiquidCrystal_I2C(i2caddress, cols, rows);
     lcdi2c.init();
     lcdi2c.backlight();
   } else {

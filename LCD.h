@@ -16,6 +16,7 @@ class LCDadapt {
     void createChar(uint8_t num, unsigned char * data);
   private:
     uint8_t findi2caddress(void);
+    uint8_t i2caddress = 0;
     bool usesi2c = false;
     LiquidCrystal_I2C lcdi2c = LiquidCrystal_I2C(0,0,0);
     LiquidCrystal lcddirect = LiquidCrystal(rs, en, d4, d5, d6, d7);
