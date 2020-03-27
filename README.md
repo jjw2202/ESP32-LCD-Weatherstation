@@ -46,3 +46,12 @@ Then create and/or open the file `keys.h` inside the project folder.
 Paste in `#define OPENWEATHERAPI_KEY "key"` and replace `key` with your key. 
 The quotes must remain.
 
+### Optional parameters
+
+The weather station can optionally be configured by changing some constants.
+
+Parameter | Unit | Description | Default
+--------- | ---- | ----------- | -------
+WEATHER_CHANGE_SCREEN | Seconds | How often the weather station should switch the displayed values. | 5
+WEATHER_UPDATE_INTERVAL | Minutes | How often the displayed weather data should be updated. | 5
+POSITION_UPDATE_INTERVAL | Hours | How often the position data should be updated. | 2
