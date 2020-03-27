@@ -1,6 +1,6 @@
 
 #define COUNTRIES_SEPERATOR_LENGTH 3
-const String countries = "EN DE"; // countrycode every 3 chars
+const String countries = "EN DE ES SP "; // countrycode every 3 chars
 
 void updatetranslation(String countrycode) {
   translation_t t;
@@ -15,6 +15,14 @@ void updatetranslation(String countrycode) {
       t.rain = "Regen";
       t.snow = "Schnee";
       break;
+    case 2:
+    case 3:
+      t.temperature = "Temp.";
+      t.humidity = "Humedad";
+      t.wind = "Viento";
+      t.clouds = "Nubes";
+      t.rain = "Lluvia";
+      t.snow = "Nieve";
     default:
       t.temperature = "Temp.";
       t.humidity = "Humidity";
