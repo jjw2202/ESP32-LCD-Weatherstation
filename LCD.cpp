@@ -1,6 +1,8 @@
 #include "LCD.h"
 #include <Wire.h>
 
+LCDadapt::LCDadapt() {}
+
 LCDadapt::LCDadapt(uint8_t cols, uint8_t rows) {
   this->begin(cols, rows);
 }

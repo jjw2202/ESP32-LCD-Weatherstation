@@ -31,9 +31,10 @@
 
 const uint8_t lcd_columns = 16, lcd_rows = 2;
 
-LCDadapt lcd = LCDadapt(lcd_columns, lcd_rows);
+LCDadapt lcd = LCDadapt();
 
 void lcdsetup() {
+  lcd.begin(lcd_columns, lcd_rows);
   // nothing to do here, its all initialized in LCDadapt class
 }
 
