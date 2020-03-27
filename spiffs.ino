@@ -9,7 +9,7 @@
 #define WIFI_FILE_NAME "/wifi.cfg"
 const size_t WIFI_JSON_CAPACITY = JSON_OBJECT_SIZE(2) + 120;
 #define POSITION_FILE_NAME "/position.json"
-const size_t POSITION_JSON_CAPACITY = JSON_OBJECT_SIZE(2) + 2 * JSON_OBJECT_SIZE(3) + 110;
+const size_t POSITION_JSON_CAPACITY = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(4) + 130;
 
 //TODO: rewrite to support direct serialization to file
 
@@ -50,6 +50,8 @@ void loadposition(bool forceoverwrite) {
     position.valid = jsonposition["valid"];
     position.latitude = jsonposition["latitude"];
     position.longitude = jsonposition["longitude"];
+    position.countrycode = jsonposition["countrycode"].as<String>();
+    
   }
 }
 
@@ -63,9 +65,9 @@ void saveposition() {
   jsonposition["valid"] = position.valid;
   jsonposition["latitude"] = position.latitude;
   jsonposition["longitude"] = position.longitude;
+  jsonposition["countrycode"] = position.countrycode;
   char output[measureJson(doc)+1];
   serializeJson(doc, output, sizeof(output));
-  Serial.println("Creating position JSON: " + String(output));
   writeFile(POSITION_FILE_NAME, output);
 }
 

@@ -11,7 +11,7 @@ void weatherloop() {
   if (screencount > 3) screencount = 0;
   switch (screencount) {
     case 0: //city, country | weather description
-      screentext[0] = weather.cityname + ", " + weather.country;
+      screentext[0] = weather.cityname + ", " + weather.countrycode;
       screencharacter[0] = 2;
       screentext[1] = weather.longdescription;
       screencharacter[1] = 0;
@@ -62,6 +62,7 @@ void updateweather() {
   if (!position.valid) updateposition();
   weather_t newweather = getcurrentweather(position);
   if (newweather.valid) weather = newweather;
+  position.countrycode = weather.countrycode;
 
   /*
   //dump to serial
@@ -89,7 +90,8 @@ weather_t getcurrentweather(pos_t position) {
     + "?lat=" + String(position.latitude) 
     + "&lon=" + String(position.longitude) 
     + "&units=metric" 
-    + "&lang=en" 
+    //+ "&lang=" + (position.countrycode.equalsIgnoreCase("de") ? "de" : "en" ) //if only "de" and "en" should be allowed
+    + "&lang=" + position.countrycode  //every countrycode will be allowed
     + "&APPID=" + String(OPENWEATHERAPI_KEY)
   ;
   String answer;
@@ -135,7 +137,7 @@ weather_t getcurrentweather(pos_t position) {
   weather.shortdescription = data["weather"][0]["main"].as<String>();
   weather.longdescription = data["weather"][0]["description"].as<String>();
   weather.cityname = data["name"].as<String>();
-  weather.country = data["sys"]["country"].as<String>();
+  weather.countrycode = data["sys"]["country"].as<String>();
   weather.updatetime = data["dt"];
   weather.valid = true;
   return weather;
