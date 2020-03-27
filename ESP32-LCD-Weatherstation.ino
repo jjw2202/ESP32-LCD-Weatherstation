@@ -14,8 +14,6 @@
 // you can get an IPAPI key by contacting them at ipapi.co/contact
 // you can get an OpenWeatherAPI key by registering at home.openweathermap.org/users/sign_up
 
-#define LCDI2C //uncomment if youre using I2C to control the LCD
-
 #define WEATHER_CHANGE_SCREEN 5 //in s, floats like 1.5f are allowed
 
 #define WEATHER_UPDATE_INTERVAL 2 //in min
