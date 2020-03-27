@@ -145,7 +145,7 @@ void lcdprint(bool row, String text, uint8_t infochar, bool infocharatend) {
   text = SanitizeText(text);
   uint16_t textlength = text.length();
   uint8_t rowlength = (infochar > 0 ? MAX_ROW_LENGTH - 1 : MAX_ROW_LENGTH);
-  uint8_t rowoffset = (infochar > 0 && !infocharatend && rowlength < MAX_ROW_LENGTH ? 0 : 1);
+  //uint8_t rowoffset = (infochar > 0 && !infocharatend && rowlength < MAX_ROW_LENGTH ? 0 : 1);
   rows[row] = text;
   rowstartms[row] = millis();
   infochars[row] = infochar;
@@ -170,7 +170,7 @@ void lcdprintloop() {
     uint8_t infochar = infochars[row];
     bool infocharatend = infocharsatend[row];
     uint8_t rowlength = (infochar > 0 ? MAX_ROW_LENGTH - 1 : MAX_ROW_LENGTH);
-    uint8_t rowoffset = (infochar > 0 && !infocharatend && rowlength < MAX_ROW_LENGTH ? 0 : 1);
+    //uint8_t rowoffset = (infochar > 0 && !infocharatend && rowlength < MAX_ROW_LENGTH ? 0 : 1);
     uint32_t startms = rowstartms[row];
     uint32_t now = millis();
     lcd.setCursor(0, row);
