@@ -17,7 +17,7 @@ void weatherloop() {
       screencharacter[1] = 0;
       break;
     case 1: //temperature | humidity
-      screentext[0] = String("Temp.: ") + String(weather.temperature, 1) + "\337C";
+      screentext[0] = String("Temp.: ") + String(weather.temperature, 1) + "°C";
       screencharacter[0] = 4;
       screentext[1] = String("Humidity: ") + String(weather.humidity, 0) + "%";
       screencharacter[1] = 5;

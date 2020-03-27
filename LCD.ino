@@ -124,7 +124,7 @@ String SanitizeText(String text) {
   text.replace("ö", "\357");
   text.replace("ü", "\365");
   text.replace("ß", "\342");
-  text.replace("°", "\223");
+  text.replace("°", "\337");
   return text;
 }
 
