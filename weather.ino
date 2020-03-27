@@ -1,49 +1,60 @@
 
 uint32_t nextweatherchangems = 0;
-uint8_t screencount = 0;
+uint8_t screencount = 255;
 void weatherloop() {
   if (millis() < nextweatherchangems) return;
   nextweatherchangems = millis() + WEATHER_CHANGE_SCREEN * 1000;
 
-  uint8_t screencharacter[] = {0, 0};
-  String screentext[] = {"", ""};
-
-  if (screencount > 3) screencount = 0;
-  switch (screencount) {
-    case 0: //city, country | weather description
-      screentext[0] = weather.cityname + ", " + weather.countrycode;
-      screencharacter[0] = 2;
-      screentext[1] = weather.longdescription;
-      screencharacter[1] = 0;
-      break;
-    case 1: //temperature | humidity
-      screentext[0] = translation.temperature + ": " + String(weather.temperature, 1) + "°C";
-      screencharacter[0] = 4;
-      screentext[1] = translation.humidity + ": " + String(weather.humidity, 0) + "%";
-      screencharacter[1] = 5;
-      break;
-    case 2: //wind | clouds
-      screentext[0] = translation.wind + ": " + String(weather.wind, 1) + "m/s";
-      screencharacter[0] = 6;
-      screentext[1] = translation.clouds + ": " + String(weather.cloud, 0) + "%";
-      screencharacter[1] = 7;
-      break;
-    case 3: //rain | snow
-      screentext[0] = translation.rain + ": " + String(weather.rain, 1) + "mm/h";
-      screencharacter[0] = 8;
-      if (weather.snow != 0) {
-        screentext[1] = translation.snow + ": " + String(weather.snow, 1) + "mm/h";
-        screencharacter[1] = 9;
-      }
-      else {
-        screentext[1] = "";
-      }
-      break;
+  while(1) {
+    uint8_t screencharacter[] = {0, 0};
+    String screentext[] = {"", ""};
+  
+    screencount++;
+    if (screencount > 3) screencount = 0;
+    switch (screencount) {
+      case 0: //city, country | weather description
+        screentext[0] = weather.cityname + ", " + weather.countrycode;
+        screencharacter[0] = 2;
+        screentext[1] = weather.longdescription;
+        screencharacter[1] = 0;
+        break;
+      case 1: //temperature | humidity
+        screentext[0] = translation.temperature + ": " + String(weather.temperature, 1) + "°C";
+        screencharacter[0] = 4;
+        screentext[1] = translation.humidity + ": " + String(weather.humidity, 0) + "%";
+        screencharacter[1] = 5;
+        break;
+      case 2: //wind | clouds
+        screentext[0] = translation.wind + ": " + String(weather.wind, 1) + "m/s";
+        screencharacter[0] = 6;
+        screentext[1] = translation.clouds + ": " + String(weather.cloud, 0) + "%";
+        screencharacter[1] = 7;
+        break;
+      case 3: //rain | snow
+        if ((weather.rain != 0) && (weather.rain != 0)) {
+          screentext[0] = translation.rain + ": " + String(weather.rain, 1) + "mm/h";
+          screencharacter[0] = 8;
+          screentext[1] = translation.snow + ": " + String(weather.snow, 1) + "mm/h";
+          screencharacter[1] = 9;
+        }
+        if ((weather.rain != 0) && (weather.snow == 0)) {
+          screentext[0] = translation.rain + ": " + String(weather.rain, 1) + "mm/h";
+          screencharacter[0] = 8;
+          screentext[1] = "";
+        }
+        if ((weather.rain == 0) && (weather.snow != 0)) {
+          screentext[0] = translation.snow + ": " + String(weather.snow, 1) + "mm/h";
+          screencharacter[0] = 9;
+          screentext[1] = "";
+        }
+        if ((weather.rain == 0) && (weather.rain == 0)) continue;
+        break;
+    }
+    for (uint8_t i = 0; i < 2; i++) {
+      lcdprint(i, screentext[i], screencharacter[i]);
+    }
+    break;
   }
-  for (uint8_t i = 0; i < 2; i++) {
-    lcdprint(i, screentext[i], screencharacter[i]);
-  }
-  screencount++;
 }
 
 uint32_t nextweatherupdatems = 0;
