@@ -54,6 +54,7 @@ void updateweather() {
   weather_t newweather = getcurrentweather(position);
   if (newweather.valid) weather = newweather;
 
+  /*
   //dump to serial
   Serial.println("temperature: " + String(weather.temperature));
   Serial.println("humidity: " + String(weather.humidity));
@@ -68,6 +69,7 @@ void updateweather() {
   Serial.println("cityname: " + String(weather.cityname));
   Serial.println("country: " + String(weather.country));
   Serial.println("updatetime: " + String(weather.updatetime));
+  */
 }
 
 weather_t getcurrentweather(pos_t position) {
@@ -100,7 +102,7 @@ weather_t getcurrentweather(pos_t position) {
   answer = client.readStringUntil('{');
   answer = String("{") + client.readStringUntil('\n');
   client.stop();
-  Serial.println("Weather data: " + String(answer));
+  //Serial.println("Weather data: " + String(answer));
   DynamicJsonDocument data(1024);
   DeserializationError error = deserializeJson(data, answer);
   if (error) {
