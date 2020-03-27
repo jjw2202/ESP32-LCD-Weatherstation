@@ -168,12 +168,3 @@ void lcdstatus3() {
   lcd.setCursor(15, 1);
   lcd.write(byte(2));
 }
-
-void lcdtest() {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(String("Hello World"));
-  lcd.setCursor(0, 1);
-  lcd.print("Im the best");
-  //lcd.clear();
-}
