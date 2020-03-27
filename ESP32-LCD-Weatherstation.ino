@@ -27,13 +27,22 @@ const char * hostname = "Weatherstation";
 
 #define WDT_TIMEOUT 1000 //WDT timeout in seconds, seems more like milliseconds even though documentation says its in seconds
 
-#define WELCOMETEXT_COUNT 5
+#define WELCOMETEXT_COUNT 14
 const String welcometext[] = {
   "Creating the weather",
   "Looking at the weather",
-  "Downloading the weather",
-  "Downloading some Clouds",
+  "Downloading some clouds",
   "Choosing the weather",
+  "Looking for clouds",
+  "Counting the sun rays",
+  "Counting rain drops",
+  "Measuring the clouds",
+  "Searching for snow",
+  "Creating some clouds",
+  "Downloading rain drops",
+  "Thinking of next season",
+  "Listening to the sun",
+  "Feeling the temperature",
 };
 
 typedef struct {
