@@ -1,8 +1,8 @@
 
 
 byte chararray[][8] = {
-  {0, 0, 0, 0, 0, 0, 0, 0}, //no info char
-  { //wifi
+  {0, 0, 0, 0, 0, 0, 0, 0}, //no info char [0]
+  { //wifi [1]
     0b00010,
     0b01001,
     0b00101,
@@ -12,7 +12,7 @@ byte chararray[][8] = {
     0b00010,
     0b00000
   },
-  { //position
+  { //position [2]
     0b00000,
     0b01110,
     0b11111,
@@ -22,7 +22,7 @@ byte chararray[][8] = {
     0b00100,
     0b00000
   },
-  { //weather
+  { //weather [3]
     0b11100,
     0b11000,
     0b10000,
@@ -32,7 +32,7 @@ byte chararray[][8] = {
     0b00000,
     0b00000
   },
-  { //temperature
+  { //temperature [4]
     0b00100,
     0b01110,
     0b01010,
@@ -42,7 +42,7 @@ byte chararray[][8] = {
     0b01110,
     0b11111
   },
-  { //humidity
+  { //humidity [5]
     0b10010,
     0b01001,
     0b10010,
@@ -52,7 +52,7 @@ byte chararray[][8] = {
     0b01000,
     0b10101
   },
-  { //wind
+  { //wind [6]
     0b00110,
     0b01001,
     0b00001,
@@ -62,7 +62,7 @@ byte chararray[][8] = {
     0b00010,
     0b01100
   },
-  { //clouds
+  { //clouds [7]
     0b00000,
     0b00000,
     0b01101,
@@ -72,7 +72,7 @@ byte chararray[][8] = {
     0b00000,
     0b00000
   },
-  { //rain
+  { //rain [8]
     0b00000,
     0b00100,
     0b01110,
@@ -82,7 +82,7 @@ byte chararray[][8] = {
     0b01110,
     0b00000
   },
-  { //snow
+  { //snow [9]
     0b00000,
     0b10101,
     0b01110,
