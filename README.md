@@ -2,6 +2,20 @@
 
 A small weather station using only an ESP32 and a 16x2 LCD.
 
+## Features
+
+Our weather station has quite some special features:
+
+* Displays weather data of current location
+* Automatically switches language depending on location
+* Automatic  detection of I²C or directly connected LCD
+
+A little bit more hidden, but also relevant:
+
+* Stutter free experience due to parallel processing
+* Nice Icons
+* No irrelevant information due to a neat and tidy layouted display
+
 ## Hardware Setup
 
 Our weather station supports LCDs connected directly to the ESP32 as well as those controlled by I2C. The special thing about it: you don't have to change anything in the code - plug and play.
@@ -81,5 +95,15 @@ The quotes must remain.
 You can get a free OpenWeatherAPI key by registering at [their homepage](https://home.openweathermap.org/users/sign_up).
 
 Then create and/or open the file `keys.h` inside the project folder.
-Paste in `#define OPENWEATHERAPI_KEY "key"` and replace `key` with your key. 
+Paste in `#define OPENWEATHERAPI_KEY "key"` and replace `key` with your key.
 The quotes must remain.
+
+### Optional parameters
+
+The weather station can optionally be configured by changing some constants.
+
+Parameter | Unit | Description | Default
+--------- | ---- | ----------- | -------
+WEATHER_CHANGE_SCREEN | Seconds | How often the weather station should switch the displayed values. | 5
+WEATHER_UPDATE_INTERVAL | Minutes | How often the displayed weather data should be updated. | 5
+POSITION_UPDATE_INTERVAL | Hours | How often the position data should be updated. | 2

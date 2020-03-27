@@ -16,8 +16,8 @@
 
 #define WEATHER_CHANGE_SCREEN 5 //in s, floats like 1.5f are allowed
 
-#define WEATHER_UPDATE_INTERVAL 2 //in min
-#define POSITION_UPDATE_INTERVAL 1 //in h
+#define WEATHER_UPDATE_INTERVAL 5 //in min
+#define POSITION_UPDATE_INTERVAL 2 //in h
 
 #define WIFI_CONNECT_ATTEMPTS 3 // max attempts for initiating wifi connection
 const char * hostname = "Weatherstation";
