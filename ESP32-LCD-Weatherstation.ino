@@ -26,6 +26,14 @@ const char * hostname = "Weatherstation";
 
 #define WDT_TIMEOUT 1000 //WDT timeout in seconds, seems more like milliseconds even though documentation says its in seconds
 
+const String welcometext[] = {
+  "Creating the weather",
+  "Looking at the weather",
+  "Downloading the weather",
+  "Downloading some Clouds",
+  "Choosing the weather",
+};
+
 typedef struct {
   double latitude, longitude;
   bool valid = false;

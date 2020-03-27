@@ -89,6 +89,10 @@ const uint8_t lcd_columns = 16, lcd_rows = 2;
 void genericlcdsetup() {
 }
 
+void lcdwelcometext() {
+  uint8_t textnum = random(sizeof(welcometext));
+}
+
 #define MAX_ROW_LENGTH 16
 String rows[] = {"", ""};
 uint32_t rowstartms[] = {0, 0};
