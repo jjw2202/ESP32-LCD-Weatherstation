@@ -17,22 +17,22 @@ void weatherloop() {
       screencharacter[1] = 0;
       break;
     case 1: //temperature | humidity
-      screentext[0] = String("Temp.: ") + String(weather.temperature, 1) + "°C";
+      screentext[0] = translation.temperature + ": " + String(weather.temperature, 1) + "°C";
       screencharacter[0] = 4;
-      screentext[1] = String("Humidity: ") + String(weather.humidity, 0) + "%";
+      screentext[1] = translation.humidity + ": " + String(weather.humidity, 0) + "%";
       screencharacter[1] = 5;
       break;
     case 2: //wind | clouds
-      screentext[0] = String("Wind: ") + String(weather.wind, 1) + "m/s";
+      screentext[0] = translation.wind + ": " + String(weather.wind, 1) + "m/s";
       screencharacter[0] = 6;
-      screentext[1] = String("Clouds: ") + String(weather.cloud, 0) + "%";
+      screentext[1] = translation.clouds + ": " + String(weather.cloud, 0) + "%";
       screencharacter[1] = 7;
       break;
     case 3: //rain | snow
-      screentext[0] = String("Rain: ") + String(weather.rain, 1) + "mm/h";
+      screentext[0] = translation.rain + ": " + String(weather.rain, 1) + "mm/h";
       screencharacter[0] = 8;
       if (weather.snow != 0) {
-        screentext[1] = String("Snow: ") + String(weather.snow, 1) + "mm/h";
+        screentext[1] = translation.snow + ": " + String(weather.snow, 1) + "mm/h";
         screencharacter[1] = 9;
       }
       else {

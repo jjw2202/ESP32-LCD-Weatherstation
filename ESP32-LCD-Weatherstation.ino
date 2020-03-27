@@ -57,10 +57,14 @@ typedef struct {
   String internalip;
   bool valid = false;
 } ia_t; //ipaddress
+typedef struct {
+  String temperature, humidity, wind, clouds, rain, snow;
+} translation_t; //translation
 
 ia_t ipaddress;
 pos_t position;
 ws_t wifisettings;
+translation_t translation;
 
 typedef struct {
   double temperature, humidity, rain, snow, wind, cloud, pressure, feelslike;
@@ -82,6 +86,7 @@ void setup() {
   SPIFFSsetup();
   lcdsetup();
   lcdwelcometext();
+  updatetranslation("EN");
 
   lcdwelcometext(1);
   wifisetup();
@@ -97,6 +102,7 @@ void setup() {
   
   lcdwelcometext(3);
   updateweather();
+  updatetranslation(position.countrycode);
 
   Serial.println("Internal IP Address: " + String(ipaddress.internalip));
   
@@ -201,6 +207,7 @@ void updatepostion(void *pvParameters)  // This is a task.
   //Serial.println("esp_task_wdt_status: " + String(esp_err_to_name(esp_task_wdt_status(NULL))));
   while(1) {
     updateposition();
+    updatetranslation(position.countrycode);
     //Serial.println("updatetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));
     vTaskDelay(POSITION_UPDATE_INTERVAL * 1000 * 60 * 60);
   }
