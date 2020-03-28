@@ -22,12 +22,12 @@ Our weather station supports LCDs connected directly to the ESP32 as well as tho
 
 ### I²C
 
-| ESP32 | LCD     |
-|-------|---------|
-| GND   | GND     |
-| VIN   | VCC     |
-| SDA   | GPIO 21 |
-| SCL   | GPIO 22 |
+| ESP32   | LCD |
+|---------|-----|
+| GND     | GND |
+| VIN     | VCC |
+| GPIO 21 | SDA |
+| GPIO 22 | SCL |
 
 ![connection I²C](documentation/connection_I2C.png)
 
@@ -56,13 +56,32 @@ Our weather station supports LCDs connected directly to the ESP32 as well as tho
 
 ## Software Setup
 
-You only need to give it 3 things:
+### Arduino IDE Setup
 
-* Your WiFi Credentials
-* An IPAPI Key
-* An OpenWeatherAPI Key
+#### Install the ESP32 in the Arduino IDE
 
-### WiFi Credentials
+1. Start the Arduino IDE and open the Preferences (Ctrl + Comma)
+1. Copy `https://dl.espressif.com/dl/package_esp32_index.json,` into "Additional Boards Manager URLs"
+1. Restart the Arduino IDE
+1. Open the Boards Manager `Tools -> Board: -> Boards Manager`
+1. Search for `esp32` and install `esp32 by Espressif Systems`
+
+#### Install the libraries
+
+Make sure that you have installed the following libraries:
+
+| Name              | Author             | Part of Arduino Library Manager |
+|-------------------|--------------------|---------------------------------|
+| ArduinoJson       | Benoit Blanchon    | :heavy_check_mark:              |
+| LiquidCrystal_I2C | Frank de Brabander | :heavy_check_mark:              |
+
+1. Open the Library Manager (Ctrl + Shift + I)
+1. Search for `ArduinoJson` and install `ArduinoJson by Benoit Blanchon`
+1. Search for `LiquidCrystal I2C` and install `LiquidCrystal I2C by Frank de Brabander`
+
+### Code Setup
+
+#### WiFi Credentials
 
 Create a folder named `data` inside the project folder.
 
@@ -82,7 +101,7 @@ Now replace `SSID` and `PASSWORD` with your WiFi Name and Password accordingly.
 You then need to upload it using the 
 [Arduino ESP32 filesystem uploader by me-no-dev](https://github.com/me-no-dev/arduino-esp32fs-plugin).
 
-### IPAPI Key
+#### IPAPI Key
 
 To get an IPAPI key for free, contact them at [ipapi.co/contact](https://ipapi.co/contact) and ask for a free trial key.
 
@@ -90,7 +109,7 @@ Then create and/or open the file `keys.h` inside the project folder.
 Paste in `#define IPAPI_KEY "key"` and replace `key` with your key. 
 The quotes must remain.
 
-### OpenWeatherAPI Key
+#### OpenWeatherAPI Key
 
 You can get a free OpenWeatherAPI key by registering at [their homepage](https://home.openweathermap.org/users/sign_up).
 
@@ -98,7 +117,7 @@ Then create and/or open the file `keys.h` inside the project folder.
 Paste in `#define OPENWEATHERAPI_KEY "key"` and replace `key` with your key.
 The quotes must remain.
 
-### Optional parameters
+#### Optional parameters
 
 The weather station can optionally be configured by changing some constants.
 
@@ -107,3 +126,10 @@ Parameter | Unit | Description | Default
 WEATHER_CHANGE_SCREEN | Seconds | How often the weather station should switch the displayed values. | 5
 WEATHER_UPDATE_INTERVAL | Minutes | How often the displayed weather data should be updated. | 5
 POSITION_UPDATE_INTERVAL | Hours | How often the position data should be updated. | 2
+
+### Code Upload
+
+1. Plug in the ESP32 via USB into your PC
+1. Open `Tools -> Board` and select `ESP32 Dev Module`
+1. Open `Tools -> Port` and select the port were your ESP32 is connected to (usually the highest number)
+1. Upload the sketch (Ctrl + U)
