@@ -63,7 +63,7 @@ Our weather station supports LCDs connected directly to the ESP32 as well as tho
 1. Start the Arduino IDE and open the Preferences (Ctrl + Comma)
 1. Copy `https://dl.espressif.com/dl/package_esp32_index.json,` into "Additional Boards Manager URLs"
 1. Restart the Arduino IDE
-1. Open the Boards Manager `Tools -> Board: -> Boards Manager`
+1. Open the Boards Manager `Tools -> Board -> Boards Manager`
 1. Search for `esp32` and install `esp32 by Espressif Systems`
 
 #### Install the libraries
