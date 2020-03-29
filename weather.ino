@@ -88,7 +88,7 @@ void updateweather() {
   Serial.println("shortdescription: " + String(weather.shortdescription));
   Serial.println("longdescription: " + String(weather.longdescription));
   Serial.println("cityname: " + String(weather.cityname));
-  Serial.println("country: " + String(weather.country));
+  Serial.println("country: " + String(weather.countrycode));
   Serial.println("updatetime: " + String(weather.updatetime));
   */
 }
