@@ -82,9 +82,9 @@ String rows[] = {"", ""};
 uint32_t rowstartms[] = {0, 0};
 uint8_t infochars[] = {0, 0};
 bool infocharsatend[] = {false, false};
-#define LCD_SCROLL_START_WAIT 3000 //in ms
+#define LCD_SCROLL_START_WAIT 2000 //in ms
 #define LCD_SCROLL_SPEED_WAIT 500 //in ms
-#define LCD_SCROLL_END_WAIT 2000 //in ms
+#define LCD_SCROLL_END_WAIT 1500 //in ms
 
 void lcdprint() {for (uint8_t row = 0; row < 2; row++) {lcdprint(row, "", 0, false);}}
 void lcdprint(bool row) {lcdprint(row, "", 0, false);}
