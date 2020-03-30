@@ -29,7 +29,7 @@ void updatetranslation(String countrycode) {
       t.humidity = "Humidite";
       t.wind = "Vent";
       t.clouds = "Nuages";
-      t.rain = "pluie";
+      t.rain = "Pluie";
       t.snow = "Neige";
       break;
     default:  //EN
