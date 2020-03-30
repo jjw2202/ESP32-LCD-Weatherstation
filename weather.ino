@@ -41,11 +41,13 @@ void weatherloop() {
           screentext[0] = translation.rain + ": " + String(weather.rain, 1) + "mm/h";
           screencharacter[0] = 8;
           screentext[1] = "";
+          screencharacter[1] = 0;
         }
         if ((weather.rain == 0) && (weather.snow != 0)) {
           screentext[0] = translation.snow + ": " + String(weather.snow, 1) + "mm/h";
           screencharacter[0] = 9;
           screentext[1] = "";
+          screencharacter[1] = 0;
         }
         if ((weather.rain == 0) && (weather.rain == 0)) continue;
         break;
