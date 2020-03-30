@@ -176,7 +176,8 @@ void changetask(void *pvParameters)  // This is a task.
   while(1) {
     weatherloop();
     //Serial.println("changetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));
-    vTaskDelay(WEATHER_CHANGE_SCREEN * 1000);
+    //vTaskDelay(WEATHER_CHANGE_SCREEN * 1000);
+    vTaskDelay(getnextweatherchangems() - millis());
   }
 }
 
