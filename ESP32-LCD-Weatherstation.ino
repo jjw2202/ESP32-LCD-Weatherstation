@@ -23,6 +23,7 @@
 const char * hostname = "Weatherstation";
 #define IP_RESPONSE_TIMEOUT 5000
 
+#define LCD_UPDATE_INTERVAL 100 // how often LCD should be refreshed, in ms
 #define WDT_TIMEOUT 1000 //WDT timeout in seconds, seems more like milliseconds even though documentation says its in seconds
 
 #define WELCOMETEXT_COUNT 14
@@ -160,7 +161,7 @@ void lcdtask(void *pvParameters)  // This is a task.
   while(1) {
     lcdprintloop();
     //Serial.println("lcdprint uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));
-    vTaskDelay(500);
+    vTaskDelay(LCD_UPDATE_INTERVAL);
   }
 }
 
@@ -176,7 +177,8 @@ void changetask(void *pvParameters)  // This is a task.
   while(1) {
     weatherloop();
     //Serial.println("changetask uxTaskGetStackHighWaterMark: " + String(uxTaskGetStackHighWaterMark(NULL)));
-    vTaskDelay(WEATHER_CHANGE_SCREEN * 1000);
+    //vTaskDelay(WEATHER_CHANGE_SCREEN * 1000);
+    vTaskDelay(getnextweatherchangems() - millis());
   }
 }
 

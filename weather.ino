@@ -1,5 +1,6 @@
 
 uint32_t nextweatherchangems = 0;
+uint32_t getnextweatherchangems() {return nextweatherchangems;}
 uint8_t screencount = 255;
 void weatherloop() {
   if (millis() < nextweatherchangems) return;
