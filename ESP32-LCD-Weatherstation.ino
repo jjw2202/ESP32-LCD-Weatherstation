@@ -84,6 +84,15 @@ void setup() {
   
   SPIFFSsetup();
   lcdsetup();
+  xTaskCreatePinnedToCore(
+    lcdtask
+    ,  "lcdtask"
+    ,  2000  // Stack size
+    ,  NULL
+    ,  1  // Priority
+    ,  NULL 
+    ,  1  //  Core
+  );
   lcdwelcometext();
   updatetranslation("EN");
 
@@ -107,16 +116,6 @@ void setup() {
   
   Serial.println("Starting tasks...");
   
-  xTaskCreatePinnedToCore(
-    lcdtask
-    ,  "lcdtask"
-    ,  2000  // Stack size
-    ,  NULL
-    ,  1  // Priority
-    ,  NULL 
-    ,  1  //  Core
-  );
-  delay(1000);
   xTaskCreatePinnedToCore(
     changetask
     ,  "changetask"

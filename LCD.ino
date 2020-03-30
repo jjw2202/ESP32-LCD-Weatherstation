@@ -99,24 +99,14 @@ void lcdprint(bool row, String text, uint8_t infochar, bool infocharatend) {
   rowstartms[row] = millis();
   infochars[row] = infochar;
   infocharsatend[row] = infocharatend;
-  if (infochar > 0) lcd.createChar(row, chararray[infochar]);
-  if (textlength > 16) {
-    lcdprintloop();
-  } else {
-    text.concat(String("                ").substring(0, rowlength - textlength));
-    lcd.setCursor(0, row);
-    if (infochar > 0 && !infocharatend) lcd.write(byte(row));
-    lcd.print(text);
-    if (infochar > 0 && infocharatend) lcd.write(byte(row));
-  }
 }
 
 void lcdprintloop() {
   for (uint8_t row = 0; row < 2; row++) {
     String text = rows[row];
     uint16_t textlength = text.length();
-    if (textlength <= 16) continue;
     uint8_t infochar = infochars[row];
+    if (infochar > 0) lcd.createChar(row, chararray[infochar]);
     bool infocharatend = infocharsatend[row];
     uint8_t rowlength = (infochar > 0 ? MAX_ROW_LENGTH - 1 : MAX_ROW_LENGTH);
     //uint8_t rowoffset = (infochar > 0 && !infocharatend && rowlength < MAX_ROW_LENGTH ? 0 : 1);
@@ -124,29 +114,34 @@ void lcdprintloop() {
     uint32_t now = millis();
     lcd.setCursor(0, row);
     if (infochar > 0 && !infocharatend) lcd.write(row);
-    if (now < startms + LCD_SCROLL_START_WAIT) {
-      //start wait
-      lcd.print(text.substring(0, rowlength));
-    } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - rowlength)) {
-      //scroll to left
-      uint16_t progress = 
-        ((double)(now - startms - LCD_SCROLL_START_WAIT) 
-        / (LCD_SCROLL_SPEED_WAIT * (textlength - rowlength))) * (textlength - rowlength);
-      lcd.print(text.substring(progress, progress + rowlength));
-    } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT) {
-      //end wait
-      lcd.print(text.substring(textlength - rowlength, textlength));
-    } else if (now < startms + LCD_SCROLL_START_WAIT + 2 * LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT) {
-      //scroll to right
-      uint16_t progress = (textlength - rowlength) - 
-        ((double)(now - startms - LCD_SCROLL_START_WAIT - LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) - LCD_SCROLL_END_WAIT)
-        / (LCD_SCROLL_SPEED_WAIT * (textlength - rowlength))) * (textlength - rowlength);
-      lcd.print(text.substring(progress, progress + rowlength));
+    if (textlength > 16) {
+      if (now < startms + LCD_SCROLL_START_WAIT) {
+        //start wait
+        lcd.print(text.substring(0, rowlength));
+      } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - rowlength)) {
+        //scroll to left
+        uint16_t progress = 
+          ((double)(now - startms - LCD_SCROLL_START_WAIT) 
+          / (LCD_SCROLL_SPEED_WAIT * (textlength - rowlength))) * (textlength - rowlength);
+        lcd.print(text.substring(progress, progress + rowlength));
+      } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT) {
+        //end wait
+        lcd.print(text.substring(textlength - rowlength, textlength));
+      } else if (now < startms + LCD_SCROLL_START_WAIT + 2 * LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT) {
+        //scroll to right
+        uint16_t progress = (textlength - rowlength) - 
+          ((double)(now - startms - LCD_SCROLL_START_WAIT - LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) - LCD_SCROLL_END_WAIT)
+          / (LCD_SCROLL_SPEED_WAIT * (textlength - rowlength))) * (textlength - rowlength);
+        lcd.print(text.substring(progress, progress + rowlength));
+      } else {
+        //reset
+        rowstartms[row] = now;
+        Serial.println("lcdprintloop: reached end of scroll animation, resetting!");
+        lcdprintloop();
+      }
     } else {
-      //reset
-      rowstartms[row] = now;
-      Serial.println("lcdloop: reached end of scroll animation, resetting!");
-      lcdprintloop();
+      text.concat(String("                ").substring(0, rowlength - textlength));
+      lcd.print(text);
     }
     if (infochar > 0 && infocharatend) lcd.write(row);
   }
