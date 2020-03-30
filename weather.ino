@@ -32,7 +32,7 @@ void weatherloop() {
         screencharacter[1] = 7;
         break;
       case 3: //rain | snow
-        if ((weather.rain != 0) && (weather.rain != 0)) {
+        if ((weather.rain != 0) && (weather.snow != 0)) {
           screentext[0] = translation.rain + ": " + String(weather.rain, 1) + "mm/h";
           screencharacter[0] = 8;
           screentext[1] = translation.snow + ": " + String(weather.snow, 1) + "mm/h";
@@ -50,7 +50,7 @@ void weatherloop() {
           screentext[1] = "";
           screencharacter[1] = 0;
         }
-        if ((weather.rain == 0) && (weather.rain == 0)) continue;
+        if ((weather.rain == 0) && (weather.snow == 0)) continue;
         break;
     }
     for (uint8_t i = 0; i < 2; i++) {
