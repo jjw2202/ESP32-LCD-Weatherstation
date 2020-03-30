@@ -58,6 +58,10 @@ void weatherloop() {
     }
     break;
   }
+  uint32_t scrollmillis = max(calculatescrollmillis(0), calculatescrollmillis(1));
+  if (scrollmillis > (WEATHER_CHANGE_SCREEN * 1000)) {
+    nextweatherchangems = millis() + scrollmillis;
+  }
 }
 
 uint32_t nextweatherupdatems = 0;
