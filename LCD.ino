@@ -147,7 +147,8 @@ void lcdprintloop() {
   }
 }
 
-uint32_t calculatescrollmillis(bool row) {return calculatescrollmillis(rows[row], infochars[row]);}
+uint32_t calculatescrollmillis(bool row) {return calculatescrollmillis(row, false);}
+uint32_t calculatescrollmillis(bool row, bool fullscroll) {return calculatescrollmillis(rows[row], infochars[row], fullscroll);}
 uint32_t calculatescrollmillis(String text) {return calculatescrollmillis(text, false);}
 uint32_t calculatescrollmillis(String text, bool hasinfochar) {return calculatescrollmillis(text, hasinfochar, true);}
 uint32_t calculatescrollmillis(String text, bool hasinfochar, bool fullscroll) {
