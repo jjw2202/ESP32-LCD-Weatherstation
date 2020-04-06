@@ -17,6 +17,9 @@ void LCDadapt::begin(uint8_t cols, uint8_t rows) {
   } else {
     lcddirect = LiquidCrystal(rs, en, d4, d5, d6, d7);
     lcddirect.begin(cols, rows);
+    ledcSetup(PWM_CHANNEL, PWM_FREQUENCY, PWM_RESOLUTION);
+    ledcAttachPin(a, PWM_CHANNEL);
+    ledcWrite(255);
   }
 }
 
@@ -57,6 +60,14 @@ void LCDadapt::createChar(uint8_t num, unsigned char * data) {
     lcdi2c.createChar(num, data);
   } else {
     lcddirect.createChar(num, data);
+  }
+}
+
+void LCDadapt::setBacklight(uint8_t brightness) {
+  if (usesi2c) {
+    lcdi2c.setBacklight(brightness > 0);
+  } else {
+    ledcWrite(PWM_CHANNEL, brightness);
   }
 }
 
