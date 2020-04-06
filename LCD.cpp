@@ -66,7 +66,7 @@ void LCDadapt::createChar(uint8_t num, unsigned char * data) {
 
 void LCDadapt::setBacklight(uint8_t brightness) {
   if (usesi2c) {
-    lcdi2c.setBacklight(brightness > 0);
+    lcdi2c.setBacklight(brightness);
   } else {
     ledcWrite(PWM_CHANNEL, brightness);
   }
