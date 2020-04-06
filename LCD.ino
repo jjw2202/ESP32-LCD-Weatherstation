@@ -146,10 +146,10 @@ void lcdprintloop() {
   //Backlight
   #ifdef DIMMING_ENABLED
     if (millis() - backlighttimeoutmillis > BACKLIGHT_TIMEOUT * 1000) backlightstate = false;
-    if (backlightstate == false) {
-      lcd.dim(backlightbrightnessoff, BACKLIGHT_DIM_TIME);
-    } else {
+    if (backlightstate) {
       lcd.dim(backlightbrightnesson, BACKLIGHT_DIM_TIME);
+    } else {
+      lcd.dim(backlightbrightnessoff, BACKLIGHT_DIM_TIME);
     }
   #endif
 }

@@ -28,7 +28,7 @@
 #define TOUCH_CYCLE_TIME 0x8000
 
 #define BACKLIGHT_TIMEOUT 30  //in s, timeout for the lcd backlight
-#define BACKLIGHT_DIM_TIME 500  //in ms, how long it takes to dim
+#define BACKLIGHT_DIM_TIME 1000  //in ms, how long it takes to dim
 uint8_t backlightbrightnessoff = 0; //brightness of lcd when dimmed
 uint8_t backlightbrightnesson = 255;  //brightness of lcd when at full brightness
 

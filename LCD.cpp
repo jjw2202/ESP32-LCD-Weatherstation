@@ -83,6 +83,7 @@ void LCDadapt::dim(uint8_t brightness, uint16_t ms) {
     this->setBacklight(SigmoidInterpolate(startbrightness, brightness, progress));
     delay(INTERPOLATION_INTERVAL);
   }
+  this->setBacklight(brightness);
 }
 
 uint8_t LCDadapt::findi2caddress() {
