@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "LCD.h"
 #include <Wire.h>
 
@@ -19,7 +20,7 @@ void LCDadapt::begin(uint8_t cols, uint8_t rows) {
     lcddirect.begin(cols, rows);
     ledcSetup(PWM_CHANNEL, PWM_FREQUENCY, PWM_RESOLUTION);
     ledcAttachPin(a, PWM_CHANNEL);
-    ledcWrite(255);
+    ledcWrite(PWM_CHANNEL, 255);
   }
 }
 
@@ -69,6 +70,19 @@ void LCDadapt::setBacklight(uint8_t brightness) {
   } else {
     ledcWrite(PWM_CHANNEL, brightness);
   }
+  this->brightness = brightness;
+}
+
+void LCDadapt::dim(uint8_t brightness, uint16_t ms) {
+  if (usesi2c) return this->setBacklight(brightness);
+  if (this->brightness == brightness) return;
+  uint32_t startms = millis();
+  uint8_t startbrightness = this->brightness;
+  while (millis() - startms < ms) {
+    double progress = (double)(millis() - startms) / ms;
+    this->setBacklight(SigmoidInterpolate(startbrightness, brightness, progress));
+    delay(INTERPOLATION_INTERVAL);
+  }
 }
 
 uint8_t LCDadapt::findi2caddress() {
@@ -102,4 +116,24 @@ uint8_t LCDadapt::findi2caddress() {
     //Serial.println("No I2C devices found");
   }
   return lcdaddress;
+}
+
+double LCDadapt::LinearInterpolate(
+  double y1, double y2, 
+  double mu) {
+  return(y1*(1-mu)+y2*mu);
+}
+
+double LCDadapt::CosineInterpolate(
+  double y1, double y2, 
+  double mu) {
+  double mu2 = (1-cos(mu*PI))/2;
+  return(y1*(1-mu2)+y2*mu2);
+}
+
+double LCDadapt::SigmoidInterpolate(
+  double y1, double y2,
+  double mu) {
+  double fa = SIGMOID_FACTOR;
+  return (y2-y1)/(1+pow(EULER, (-fa*(mu-0.5))))+y1;
 }
