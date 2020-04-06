@@ -19,6 +19,22 @@
 #define WEATHER_UPDATE_INTERVAL 5 //in min
 #define POSITION_UPDATE_INTERVAL 2 //in h
 
+//#define DIMMING_ENABLED //uncomment to enable backlight dimming on the lcd
+
+#define TOUCH_ENABLED //uncomment to enable touch based backlight wakeup on the lcd
+#define TOUCH_PIN T0 //touch pin for metal housing for touch mode switch
+#define TOUCH_THRESHOLD 80 //greater means more sensitivity
+#define TOUCH_MEASURE_TIME 0x4000 //touch measurement timings,
+#define TOUCH_CYCLE_TIME 0x8000
+
+#define BACKLIGHT_TIMEOUT 30  //in s, timeout for the lcd backlight
+#define BACKLIGHT_DIM_TIME 500  //in ms, how long it takes to dim
+uint8_t backlightbrightnessoff = 0; //brightness of lcd when dimmed
+uint8_t backlightbrightnesson = 255;  //brightness of lcd when at full brightness
+
+bool backlightstate = true;
+uint32_t backlighttimeoutmillis = 0;
+
 #define WIFI_CONNECT_ATTEMPTS 3 // max attempts for initiating wifi connection
 const char * hostname = "Weatherstation";
 #define IP_RESPONSE_TIMEOUT 5000
@@ -43,6 +59,10 @@ const String welcometext[] = {
   "Listening to the sun",
   "Feeling the temperature",
 };
+
+#ifndef DIMMING_ENABLED
+  #undef TOUCH_ENABLED
+#endif
 
 typedef struct {
   double latitude, longitude;
@@ -114,6 +134,8 @@ void setup() {
   updatetranslation(position.countrycode);
 
   Serial.println("Internal IP Address: " + String(ipaddress.internalip));
+
+  interactsetup();
   
   Serial.println("Starting tasks...");
   
