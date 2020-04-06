@@ -142,6 +142,16 @@ void lcdprintloop() {
     }
     if (infochar > 0 && infocharatend) lcd.write(row);
   }
+
+  //Backlight
+  #ifdef DIMMING_ENABLED
+    if (millis() - backlighttimeoutmillis > BACKLIGHT_TIMEOUT * 1000) backlightstate = false;
+    if (backlightstate == false) {
+      lcd.dim(backlightbrightnessoff, BACKLIGHT_DIM_TIME);
+    } else {
+      lcd.dim(backlightbrightnesson, BACKLIGHT_DIM_TIME);
+    }
+  #endif
 }
 
 uint32_t calculatescrollmillis(bool row) {return calculatescrollmillis(row, false);}
