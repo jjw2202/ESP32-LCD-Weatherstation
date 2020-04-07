@@ -22,10 +22,13 @@
 //#define DIMMING_ENABLED //uncomment to enable backlight dimming on the lcd
 
 #define TOUCH_ENABLED //uncomment to enable touch based backlight wakeup on the lcd
-#define TOUCH_PIN T0 //touch pin for metal housing for touch mode switch
+#define TOUCH_PIN T0 //touch pin for backlight dimming
 #define TOUCH_THRESHOLD 80 //greater means more sensitivity
 #define TOUCH_MEASURE_TIME 0x4000 //touch measurement timings,
 #define TOUCH_CYCLE_TIME 0x8000
+
+#define SWITCH_ENABLED  //uncomment to enable switch based backlight wakeup on the lcd
+#define SWITCH_PIN 23 //switch pin for backlight dimming
 
 #define BACKLIGHT_TIMEOUT 30  //in s, timeout for the lcd backlight
 #define BACKLIGHT_DIM_TIME 1000  //in ms, how long it takes to dim
@@ -62,6 +65,7 @@ const String welcometext[] = {
 
 #ifndef DIMMING_ENABLED
   #undef TOUCH_ENABLED
+  #undef SWITCH_ENABLED
 #endif
 
 typedef struct {
