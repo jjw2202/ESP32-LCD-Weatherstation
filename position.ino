@@ -56,14 +56,10 @@ ia_t getipaddress() {
 }
 
 pos_t getposition(ia_t ipaddress) {
-  //https://ipapi.co/8.8.8.8/json/
+  //https://api.ip.sb/geoip/8.8.8.8
   pos_t position;
-  const char * hostname = "ipapi.co";
-  const String url = "/" + String(ipaddress.externalip) + "/json" 
-  #ifdef IPAPI_KEY
-    + "?key=" + IPAPI_KEY
-  #endif
-  ;
+  const char * hostname = "api.ip.sb";
+  const String url = "/geoip/" + String(ipaddress.externalip);
   String answer;
   //Serial.println(String(hostname) + String(url));
   client.connect(hostname, 443);

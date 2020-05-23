@@ -101,14 +101,6 @@ Now replace `SSID` and `PASSWORD` with your WiFi Name and Password accordingly.
 You then need to upload it using the 
 [Arduino ESP32 filesystem uploader by me-no-dev](https://github.com/me-no-dev/arduino-esp32fs-plugin).
 
-#### IPAPI Key
-
-To get an IPAPI key for free, contact them at [ipapi.co/contact](https://ipapi.co/contact) and ask for a free trial key.
-
-Then create and/or open the file `keys.h` inside the project folder.
-Paste in `#define IPAPI_KEY "key"` and replace `key` with your key. 
-The quotes must remain.
-
 #### OpenWeatherAPI Key
 
 You can get a free OpenWeatherAPI key by registering at [their homepage](https://home.openweathermap.org/users/sign_up).

@@ -8,10 +8,8 @@
 
 // WiFi credentials need to be defined in wifi.cfg ON SPIFFS!
 //   please consult the README for details
-// You have to define the IPAPI key and the OpenWeatherAPI key in keys.h
-//   #define IPAPI_KEY "key"
+// You have to define the OpenWeatherAPI key in keys.h
 //   #define OPENWEATHERAPI_KEY "key"
-// you can get an IPAPI key by contacting them at ipapi.co/contact
 // you can get an OpenWeatherAPI key by registering at home.openweathermap.org/users/sign_up
 
 #define WEATHER_CHANGE_SCREEN 5 //in s, floats like 1.5f are allowed
