@@ -8,7 +8,7 @@ Our weather station has quite some special features:
 
 * Displays weather data of current location
 * Automatically switches language depending on location
-* Automatic  detection of I²C or directly connected LCD
+* Automatic detection of I²C or directly connected LCD
 
 A little bit more hidden, but also relevant:
 
