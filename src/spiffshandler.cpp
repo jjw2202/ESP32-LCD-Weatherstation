@@ -1,3 +1,6 @@
+#include "spiffshandler.h"
+#include <SPIFFS.h>
+#include <ArduinoJson.h>
 
 // upload to spiffs tutorial: https://randomnerdtutorials.com/install-esp32-filesystem-uploader-arduino-ide/
 // upload to spiffs plugin: https://github.com/me-no-dev/arduino-esp32fs-plugin
@@ -6,9 +9,7 @@
 
 //SPIFFS data management functions
 
-#define WIFI_FILE_NAME "/wifi.cfg"
 const size_t WIFI_JSON_CAPACITY = JSON_OBJECT_SIZE(2) + 120;
-#define POSITION_FILE_NAME "/position.json"
 const size_t POSITION_JSON_CAPACITY = JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(4) + 130;
 
 //TODO: rewrite to support direct serialization to file
@@ -117,10 +118,9 @@ bool writeFile(const char * path, const char * content){
   }
   if(file.print(content)){
     return true;
-  } else {
-    Serial.println("File write failed");
-    return false;
   }
+  Serial.println("File write failed");
+  return false;
 }
 
 bool appendFile(const char * path, const char * content){
@@ -132,28 +132,25 @@ bool appendFile(const char * path, const char * content){
   }
   if(file.print(content)){
     return true;
-  } else {
-    Serial.println("File append failed");
-    return false;
   }
+  Serial.println("File append failed");
+  return false;
 }
 
 bool renameFile(const char * path1, const char * path2){
   Serial.printf("Renaming file %s to %s\r\n", path1, path2);
   if (SPIFFS.rename(path1, path2)) {
     return true;
-  } else {
-    Serial.println("File rename failed!");
-    return false;
   }
+  Serial.println("File rename failed!");
+  return false;
 }
 
 bool deleteFile(const char * path){
   Serial.printf("Deleting file: %s\r\n", path);
   if(SPIFFS.remove(path)){
     return true;
-  } else {
-    Serial.println("File delete failed!");
-    return false;
   }
+  Serial.println("File delete failed!");
+  return false;
 }

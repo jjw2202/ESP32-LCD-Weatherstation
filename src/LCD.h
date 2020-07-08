@@ -1,34 +1,55 @@
 
-#include <LiquidCrystal_I2C.h>
-#include <LiquidCrystal.h>
+/*
+ * Connection I2C:
+ * VDD  to 5V DC
+ * GND  to GND (common ground)
+ * SCL  to the I²C SCL (at the ESP32 GPIO 22)
+ * SDA  to the I²C SDA (at the ESP32 GPIO 21)
+ */
+#include "globals.h"
 
-#define PWM_FREQUENCY 5000
-#define PWM_CHANNEL 0
-#define PWM_RESOLUTION 8 //8-bit resolution
-const uint8_t rs = 13, en = 12, d4 = 14, d5 = 27, d6 = 33, d7 = 32, a = 25;
-#define SIGMOID_FACTOR 30
-#define INTERPOLATION_INTERVAL 10 //in ms, how often a
+/*
+ * Connection direct:
+ * VSS  to GND
+ * VDD  to 5V DC
+ * V0   to contrast via potentiometer to 5V DC and GND
+ * RS   to GPIO 13
+ * RW   to GND
+ * E    to GPIO 12
+ * D0   to -
+ * D1   to -
+ * D2   to -
+ * D3   to -
+ * D4   to GPIO 14
+ * D5   to GPIO 27
+ * D6   to GPIO 33
+ * D7   to GPIO 32
+ * A    to via 220Ω resistor at 5V DC
+ * K    to GND
+ */
 
-class LCDadapt {
-  public:
-    LCDadapt();
-    LCDadapt(uint8_t cols, uint8_t rows);
-    void begin(uint8_t cols, uint8_t rows);
-    void print(String text);
-    void write(uint8_t character);
-    void clear(void);
-    void setCursor(uint8_t col, uint8_t row);
-    void createChar(uint8_t num, unsigned char * data);
-    void setBacklight(uint8_t brightness);
-    void dim(uint8_t brightness, uint16_t ms);
-  private:
-    uint8_t findi2caddress(void);
-    uint8_t i2caddress = 0;
-    bool usesi2c = false;
-    uint8_t brightness = 0;
-    LiquidCrystal_I2C lcdi2c = LiquidCrystal_I2C(0,0,0);
-    LiquidCrystal lcddirect = LiquidCrystal(rs, en, d4, d5, d6, d7);
-    double LinearInterpolate(double y1, double y2, double mu);
-    double CosineInterpolate(double y1, double y2, double mu);
-    double SigmoidInterpolate(double y1, double y2, double mu);
-};
+void lcdsetup();
+
+void lcdwelcometext();
+void lcdwelcometext(uint8_t infochar);
+
+String SanitizeText(String text);
+
+#define MAX_ROW_LENGTH 16
+#define LCD_SCROLL_START_WAIT 2000 //in ms
+#define LCD_SCROLL_SPEED_WAIT 500 //in ms
+#define LCD_SCROLL_END_WAIT 1500 //in ms
+
+void lcdprint();
+void lcdprint(bool row);
+void lcdprint(bool row, String text);
+void lcdprint(bool row, String text, uint8_t infochar);
+void lcdprint(bool row, String text, uint8_t infochar, bool infocharatend);
+
+void lcdprintloop();
+
+uint32_t calculatescrollmillis(bool row);
+uint32_t calculatescrollmillis(bool row, bool fullscroll);
+uint32_t calculatescrollmillis(String text);
+uint32_t calculatescrollmillis(String text, bool hasinfochar);
+uint32_t calculatescrollmillis(String text, bool hasinfochar, bool fullscroll);

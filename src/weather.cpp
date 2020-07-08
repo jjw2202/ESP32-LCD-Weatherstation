@@ -1,3 +1,6 @@
+#include "weather.h"
+#include <WifiClientSecure.h>
+#include <ArduinoJson.h>
 
 uint32_t nextweatherchangems = 0;
 uint32_t getnextweatherchangems() {return nextweatherchangems;}
@@ -100,6 +103,7 @@ void updateweather() {
   */
 }
 
+WiFiClientSecure client;
 weather_t getcurrentweather(pos_t position) {
   // api.openweathermap.org/data/2.5/weather?lat=35&lon=139&units=metric&lang=en
   weather_t weather;

@@ -1,3 +1,7 @@
+#include "position.h"
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <ArduinoJson.h>
 
 void updateposition() {
   if (WiFi.status() != WL_CONNECTED) {
