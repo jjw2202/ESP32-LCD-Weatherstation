@@ -36,6 +36,12 @@ extern const String welcometext[] = {
   "Feeling the temperature",
 };
 
+ia_t ipaddress;
+pos_t position;
+ws_t wifisettings;
+translation_t translation;
+weather_t weather;
+
 #include "interact.h"
 #include "LCD.h"
 #include "position.h"
