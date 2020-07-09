@@ -1,3 +1,7 @@
+#include "position.h"
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <ArduinoJson.h>
 
 void updateposition() {
   if (WiFi.status() != WL_CONNECTED) {
@@ -17,29 +21,29 @@ void updateposition() {
   saveposition();
 }
 
-WiFiClientSecure client;
+WiFiClientSecure pclient;
 String getexternalip() {
   //https://myexternalip.com/raw
   const char * hostname = "myexternalip.com";
   const String url = "/raw";
-  client.connect(hostname, 443);
-  client.print(String("GET ") + url + " HTTP/1.1\r\n"
+  pclient.connect(hostname, 443);
+  pclient.print(String("GET ") + url + " HTTP/1.1\r\n"
     + "Host: " + hostname + "\r\n"
     + "Connection: close\r\n\r\n"
     + "Accept: application/json\r\n"
   );
   uint64_t sentmillis = millis();
-  while ((millis() - sentmillis <= IP_RESPONSE_TIMEOUT) && !client.available()) delay(1);
-  if (!client.available()) {
+  while ((millis() - sentmillis <= IP_RESPONSE_TIMEOUT) && !pclient.available()) delay(1);
+  if (!pclient.available()) {
     Serial.println("failed to obtain external ip address");
     //fatal error in connection
-    client.stop();
+    pclient.stop();
     return "";
   }
   String answer;
-  while (client.available()) answer = client.readStringUntil('\n');
+  while (pclient.available()) answer = pclient.readStringUntil('\n');
   Serial.println("External IP Address: " + String(answer));
-  client.stop();
+  pclient.stop();
   return answer;
 }
 
@@ -62,24 +66,24 @@ pos_t getposition(ia_t ipaddress) {
   const String url = "/geoip/" + String(ipaddress.externalip);
   String answer;
   //Serial.println(String(hostname) + String(url));
-  client.connect(hostname, 443);
-  client.print(String("GET ") + url + " HTTP/1.1\r\n"
+  pclient.connect(hostname, 443);
+  pclient.print(String("GET ") + url + " HTTP/1.1\r\n"
     + "Host: " + hostname + "\r\n"
     + "Connection: close\r\n\r\n"
     + "Accept: application/json\r\n"
   );
   uint64_t sentmillis = millis();
-  while ((millis() - sentmillis <= IP_RESPONSE_TIMEOUT) && !client.available()) delay(1);
-  if (!client.available()) {
+  while ((millis() - sentmillis <= IP_RESPONSE_TIMEOUT) && !pclient.available()) delay(1);
+  if (!pclient.available()) {
     Serial.println("failed to obtain position");
     //fatal error in connection
-    client.stop();
+    pclient.stop();
     return position;
   }
   
-  answer = client.readStringUntil('{');
-  answer = String("{") + client.readStringUntil('\r');
-  client.stop();
+  answer = pclient.readStringUntil('{');
+  answer = String("{") + pclient.readStringUntil('\r');
+  pclient.stop();
   //Serial.println("Position data: " + String(answer));
   //answer = answer.substring(0); // cut off line seperator at beginning
   StaticJsonDocument<1000> doc;

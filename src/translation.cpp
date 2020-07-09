@@ -1,5 +1,5 @@
+#include "translation.h"
 
-#define COUNTRIES_SEPERATOR_LENGTH 3
 const String countries = "EN DE ES SP FR "; // countrycode every 3 chars
 
 void updatetranslation(String countrycode) {

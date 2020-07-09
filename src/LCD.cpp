@@ -1,140 +1,136 @@
-#include "Arduino.h"
 #include "LCD.h"
-#include <Wire.h>
+#include "LCDadapt.h"
+#include "customlcdcharacters.h"
 
-LCDadapt::LCDadapt() {}
+const uint8_t lcd_columns = 16, lcd_rows = 2;
 
-LCDadapt::LCDadapt(uint8_t cols, uint8_t rows) {
-  this->begin(cols, rows);
+LCDadapt lcd = LCDadapt();
+
+void lcdsetup() {
+  lcd.begin(lcd_columns, lcd_rows);
+  // nothing to do here, its all initialized in LCDadapt class
 }
 
-void LCDadapt::begin(uint8_t cols, uint8_t rows) {
-  this->i2caddress = findi2caddress();
-  if (i2caddress > 0) this->usesi2c = true;
-  if (usesi2c) {
-    lcdi2c = LiquidCrystal_I2C(i2caddress, cols, rows);
-    lcdi2c.init();
-    lcdi2c.backlight();
-  } else {
-    lcddirect = LiquidCrystal(rs, en, d4, d5, d6, d7);
-    lcddirect.begin(cols, rows);
-    ledcSetup(PWM_CHANNEL, PWM_FREQUENCY, PWM_RESOLUTION);
-    ledcAttachPin(a, PWM_CHANNEL);
-    ledcWrite(PWM_CHANNEL, 255);
-  }
-}
-
-void LCDadapt::print(String text) {
-  if (usesi2c) {
-    lcdi2c.print(text);
-  } else {
-    lcddirect.print(text);
-  }
-}
-
-void LCDadapt::write(uint8_t character) {
-  if (usesi2c) {
-    lcdi2c.write(character);
-  } else {
-    lcddirect.write(character);
-  }
-}
-
-void LCDadapt::clear() {
-  if (usesi2c) {
-    lcdi2c.clear();
-  } else {
-    lcddirect.clear();
-  }
-}
-
-void LCDadapt::setCursor(uint8_t col, uint8_t row) {
-  if (usesi2c) {
-    lcdi2c.setCursor(col, row);
-  } else {
-    lcddirect.setCursor(col, row);
-  }
-}
-
-void LCDadapt::createChar(uint8_t num, unsigned char * data) {
-  if (usesi2c) {
-    lcdi2c.createChar(num, data);
-  } else {
-    lcddirect.createChar(num, data);
-  }
-}
-
-void LCDadapt::setBacklight(uint8_t brightness) {
-  if (usesi2c) {
-    lcdi2c.setBacklight(brightness);
-  } else {
-    ledcWrite(PWM_CHANNEL, brightness);
-  }
-  this->brightness = brightness;
-}
-
-void LCDadapt::dim(uint8_t brightness, uint16_t ms) {
-  if (usesi2c) return this->setBacklight(brightness);
-  if (this->brightness == brightness) return;
-  uint32_t startms = millis();
-  uint8_t startbrightness = this->brightness;
-  while (millis() - startms < ms) {
-    double progress = (double)(millis() - startms) / ms;
-    this->setBacklight(SigmoidInterpolate(startbrightness, brightness, progress));
-    delay(INTERPOLATION_INTERVAL);
-  }
-  this->setBacklight(brightness);
-}
-
-uint8_t LCDadapt::findi2caddress() {
-  //kindly copied from https://randomnerdtutorials.com/esp32-esp8266-i2c-lcd-arduino-ide/
-  int8_t error, address, lcdaddress = 0;
-  int nDevices = 0;
-  //Serial.println("Search I2C address...");
-  Wire.begin();
-  for(address = 1; address < 127; address++) {
-    Wire.beginTransmission(address);
-    error = Wire.endTransmission();
-    if (error == 0) {
-      //Serial.print("I2C address: 0x");
-      if (address<16) {
-        //Serial.print("0");
-      }
-      //Serial.println(address, HEX);
-      lcdaddress = address;
-      nDevices++;
+uint8_t textnum = 255;
+void lcdwelcometext() {lcdwelcometext(0);}
+void lcdwelcometext(uint8_t infochar) {
+  if (textnum == 255) textnum = random(WELCOMETEXT_COUNT);
+  String text = welcometext[textnum];
+  String rows[] = {"", ""};
+  if (text.indexOf(" ") <= 16) {
+    uint16_t index = 0, previndex;
+    while (index <= 16) {
+      previndex = index;
+      index = text.indexOf(" ", previndex + 1);
     }
-    else if (error == 4) {
-      //Serial.print("Unknow error at address 0x");
-      if (address<16) {
-        //Serial.print("0");
+    index = previndex;
+    rows[0] = text.substring(0, index);
+    rows[0] = String("                ").substring(0, (16 - rows[0].length()) / 2) + rows[0];
+    rows[1] = text.substring(index + 1);
+    rows[1] = String("                ").substring(0, ((infochar == 0 ? 16 : 15) - rows[1].length()) / 2) + rows[1];
+  } else {
+    //welcometext should not exceed 16 chars per line
+    //will not scroll due to no call to lcdprintloop() in setup
+    //maybe can be fixed by starting lcdtask earlier in setup
+    rows[0] = text;
+  }
+  lcdprint(0, rows[0]);
+  lcdprint(1, rows[1], infochar, true);
+}
+
+String SanitizeText(String text) {
+  text.replace("Ä", "ä");
+  text.replace("Ö", "ö");
+  text.replace("Ü", "ü");
+  text.replace("ä", "\341");
+  text.replace("ö", "\357");
+  text.replace("ü", "\365");
+  text.replace("ß", "\342");
+  text.replace("°", "\337");
+  return text;
+}
+
+String rows[] = {"", ""};
+uint32_t rowstartms[] = {0, 0};
+uint8_t infochars[] = {0, 0};
+bool infocharsatend[] = {false, false};
+
+void lcdprint() {for (uint8_t row = 0; row < 2; row++) {lcdprint(row, "", 0, false);}}
+void lcdprint(bool row) {lcdprint(row, "", 0, false);}
+void lcdprint(bool row, String text) {lcdprint(row, text, 0, false);}
+void lcdprint(bool row, String text, uint8_t infochar) {lcdprint(row, text, infochar, false);}
+void lcdprint(bool row, String text, uint8_t infochar, bool infocharatend) {
+  text = SanitizeText(text);
+  rows[row] = text;
+  rowstartms[row] = millis();
+  infochars[row] = infochar;
+  infocharsatend[row] = infocharatend;
+}
+
+void lcdprintloop() {
+  for (uint8_t row = 0; row < 2; row++) {
+    String text = rows[row];
+    uint16_t textlength = text.length();
+    uint8_t infochar = infochars[row];
+    if (infochar > 0) lcd.createChar(row, chararray[infochar]);
+    bool infocharatend = infocharsatend[row];
+    uint8_t rowlength = (infochar > 0 ? MAX_ROW_LENGTH - 1 : MAX_ROW_LENGTH);
+    //uint8_t rowoffset = (infochar > 0 && !infocharatend && rowlength < MAX_ROW_LENGTH ? 0 : 1);
+    uint32_t startms = rowstartms[row];
+    uint32_t now = millis();
+    lcd.setCursor(0, row);
+    if (infochar > 0 && !infocharatend) lcd.write(row);
+    if (textlength > rowlength) {
+      if (now < startms + LCD_SCROLL_START_WAIT) {
+        //start wait
+        lcd.print(text.substring(0, rowlength));
+      } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - rowlength)) {
+        //scroll to left
+        uint16_t progress = 
+          ((double)(now - startms - LCD_SCROLL_START_WAIT) 
+          / (LCD_SCROLL_SPEED_WAIT * (textlength - rowlength))) * (textlength - rowlength);
+        lcd.print(text.substring(progress, progress + rowlength));
+      } else if (now < startms + LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT) {
+        //end wait
+        lcd.print(text.substring(textlength - rowlength, textlength));
+      } else if (now < startms + LCD_SCROLL_START_WAIT + 2 * LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT) {
+        //scroll to right
+        uint16_t progress = (textlength - rowlength) - 
+          ((double)(now - startms - LCD_SCROLL_START_WAIT - LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) - LCD_SCROLL_END_WAIT)
+          / (LCD_SCROLL_SPEED_WAIT * (textlength - rowlength))) * (textlength - rowlength);
+        lcd.print(text.substring(progress, progress + rowlength));
+      } else {
+        //reset
+        rowstartms[row] = now;
+        //Serial.println("lcdprintloop: reached end of scroll animation, resetting!");
+        lcdprintloop();
       }
-      //Serial.println(address, HEX);
-      lcdaddress = address;
-    }    
+    } else {
+      text.concat(String("                ").substring(0, rowlength - textlength));
+      lcd.print(text);
+    }
+    if (infochar > 0 && infocharatend) lcd.write(row);
   }
-  if (nDevices == 0) {
-    //Serial.println("No I2C devices found");
-  }
-  return lcdaddress;
+
+  //Backlight
+  #ifdef DIMMING_ENABLED
+    if (millis() - backlighttimeoutmillis > BACKLIGHT_TIMEOUT * 1000) backlightstate = false;
+    if (backlightstate) {
+      lcd.dim(backlightbrightnesson, BACKLIGHT_DIM_TIME);
+    } else {
+      lcd.dim(backlightbrightnessoff, BACKLIGHT_DIM_TIME);
+    }
+  #endif
 }
 
-double LCDadapt::LinearInterpolate(
-  double y1, double y2, 
-  double mu) {
-  return(y1*(1-mu)+y2*mu);
-}
-
-double LCDadapt::CosineInterpolate(
-  double y1, double y2, 
-  double mu) {
-  double mu2 = (1-cos(mu*PI))/2;
-  return(y1*(1-mu2)+y2*mu2);
-}
-
-double LCDadapt::SigmoidInterpolate(
-  double y1, double y2,
-  double mu) {
-  double fa = SIGMOID_FACTOR;
-  return (y2-y1)/(1+pow(EULER, (-fa*(mu-0.5))))+y1;
+uint32_t calculatescrollmillis(bool row) {return calculatescrollmillis(row, false);}
+uint32_t calculatescrollmillis(bool row, bool fullscroll) {return calculatescrollmillis(rows[row], infochars[row], fullscroll);}
+uint32_t calculatescrollmillis(String text) {return calculatescrollmillis(text, false);}
+uint32_t calculatescrollmillis(String text, bool hasinfochar) {return calculatescrollmillis(text, hasinfochar, false);}
+uint32_t calculatescrollmillis(String text, bool hasinfochar, bool fullscroll) {
+  uint8_t rowlength = (hasinfochar ? 15 : 16);
+  uint16_t textlength = text.length();
+  if (textlength <= rowlength) return false;
+  if (fullscroll) return 2 * LCD_SCROLL_START_WAIT + 2 * LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT;
+  return LCD_SCROLL_START_WAIT + LCD_SCROLL_SPEED_WAIT * (textlength - rowlength) + LCD_SCROLL_END_WAIT;
 }

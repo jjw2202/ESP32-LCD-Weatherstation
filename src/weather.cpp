@@ -1,3 +1,6 @@
+#include "weather.h"
+#include <WifiClientSecure.h>
+#include <ArduinoJson.h>
 
 uint32_t nextweatherchangems = 0;
 uint32_t getnextweatherchangems() {return nextweatherchangems;}
@@ -100,6 +103,7 @@ void updateweather() {
   */
 }
 
+WiFiClientSecure wclient;
 weather_t getcurrentweather(pos_t position) {
   // api.openweathermap.org/data/2.5/weather?lat=35&lon=139&units=metric&lang=en
   weather_t weather;
@@ -114,23 +118,23 @@ weather_t getcurrentweather(pos_t position) {
   ;
   String answer;
   //Serial.println(String(hostname) + String(url));
-  client.connect(hostname, 443);
-  client.print(String("GET ") + url + " HTTP/1.1\r\n"
+  wclient.connect(hostname, 443);
+  wclient.print(String("GET ") + url + " HTTP/1.1\r\n"
     + "Host: " + String(hostname) + "\r\n"
     + "Connection: close\r\n\r\n"
     + "Accept: application/json\r\n"
   );
   uint64_t sentmillis = millis();
-  while ((millis() - sentmillis <= IP_RESPONSE_TIMEOUT) && !client.available()) delay(1);
-  if (!client.available()) {
+  while ((millis() - sentmillis <= IP_RESPONSE_TIMEOUT) && !wclient.available()) delay(1);
+  if (!wclient.available()) {
     Serial.println("failed to obtain weather data");
     //fatal error in connection
-    client.stop();
+    wclient.stop();
     return weather;
   }
-  answer = client.readStringUntil('{');
-  answer = String("{") + client.readStringUntil('\n');
-  client.stop();
+  answer = wclient.readStringUntil('{');
+  answer = String("{") + wclient.readStringUntil('\n');
+  wclient.stop();
   //Serial.println("Weather data: " + String(answer));
   DynamicJsonDocument data(1024);
   DeserializationError error = deserializeJson(data, answer);

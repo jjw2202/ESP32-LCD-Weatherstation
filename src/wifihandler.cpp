@@ -1,3 +1,5 @@
+#include "wifihandler.h"
+#include <WiFi.h>
 
 void wifisetup() {
   //wifi setup

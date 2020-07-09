@@ -1,9 +1,4 @@
-#include <WiFi.h>
-#include <WiFiClientSecure.h>
-#include <SPIFFS.h>
-#include <ArduinoJson.h>
 #include "keys.h"
-#include "customlcdcharacters.h"
 #include <esp_task_wdt.h>
 
 // WiFi credentials need to be defined in wifi.cfg ON SPIFFS!
@@ -12,39 +7,19 @@
 //   #define OPENWEATHERAPI_KEY "key"
 // you can get an OpenWeatherAPI key by registering at home.openweathermap.org/users/sign_up
 
-#define WEATHER_CHANGE_SCREEN 5 //in s, floats like 1.5f are allowed
+// CONFIG MOVED TO "globals.h"
+#include "globals.h"
 
-#define WEATHER_UPDATE_INTERVAL 5 //in min
-#define POSITION_UPDATE_INTERVAL 2 //in h
-
-//#define DIMMING_ENABLED //uncomment to enable backlight dimming on the lcd
-
-#define TOUCH_ENABLED //uncomment to enable touch based backlight wakeup on the lcd
-#define TOUCH_PIN T0 //touch pin for backlight dimming
-#define TOUCH_THRESHOLD 80 //greater means more sensitivity
-#define TOUCH_MEASURE_TIME 0x4000 //touch measurement timings,
-#define TOUCH_CYCLE_TIME 0x8000
-
-#define SWITCH_ENABLED  //uncomment to enable switch based backlight wakeup on the lcd
-#define SWITCH_PIN 23 //switch pin for backlight dimming
-
-#define BACKLIGHT_TIMEOUT 30  //in s, timeout for the lcd backlight
-#define BACKLIGHT_DIM_TIME 1000  //in ms, how long it takes to dim
 uint8_t backlightbrightnessoff = 0; //brightness of lcd when dimmed
 uint8_t backlightbrightnesson = 255;  //brightness of lcd when at full brightness
 
 bool backlightstate = true;
 uint32_t backlighttimeoutmillis = 0;
 
-#define WIFI_CONNECT_ATTEMPTS 3 // max attempts for initiating wifi connection
-const char * hostname = "Weatherstation";
-#define IP_RESPONSE_TIMEOUT 5000
+extern const char * hostname = "Weatherstation";
 
-#define LCD_UPDATE_INTERVAL 100 // how often LCD should be refreshed, in ms
-#define WDT_TIMEOUT 1000 //WDT timeout in seconds, seems more like milliseconds even though documentation says its in seconds
-
-#define WELCOMETEXT_COUNT 14
-const String welcometext[] = {
+extern const uint8_t WELCOMETEXT_COUNT = 14;
+extern const String welcometext[] = {
   "Creating the weather",
   "Looking at the weather",
   "Downloading some clouds",
@@ -61,41 +36,19 @@ const String welcometext[] = {
   "Feeling the temperature",
 };
 
-#ifndef DIMMING_ENABLED
-  #undef TOUCH_ENABLED
-  #undef SWITCH_ENABLED
-#endif
-
-typedef struct {
-  double latitude, longitude;
-  String countrycode;
-  bool valid = false;
-} pos_t; //position
-typedef struct {
-  String ssid, pass;
-} ws_t; //wifisettings
-typedef struct {
-  String externalip;
-  String internalip;
-  bool valid = false;
-} ia_t; //ipaddress
-typedef struct {
-  String temperature, humidity, wind, clouds, rain, snow;
-} translation_t; //translation
-
 ia_t ipaddress;
 pos_t position;
 ws_t wifisettings;
 translation_t translation;
-
-typedef struct {
-  double temperature, humidity, rain, snow, wind, cloud, pressure, feelslike;
-  String shortdescription, longdescription, cityname, countrycode;
-  bool valid = false;
-  uint32_t updatetime;
-} weather_t;
-
 weather_t weather;
+
+#include "interact.h"
+#include "LCD.h"
+#include "position.h"
+#include "spiffshandler.h"
+#include "translation.h"
+#include "weather.h"
+#include "wifihandler.h"
 
 void setup() {
   Serial.begin(115200);

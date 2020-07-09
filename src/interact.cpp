@@ -1,3 +1,4 @@
+#include "interact.h"
 
 //keeps track of interactions with user
 void interactsetup() {
